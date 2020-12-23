@@ -6,16 +6,16 @@ Vessel is strongly opinionated about how control flows across your application, 
 You can install any python packages you want and/or remove the ones you do not want.
 
 ## Setup
-To use Vessel, clone this repo into `project_root`, ensure your python environments are configured and activated. 
+To use Vessel, clone this repo into `project_root`, ensure your python environments are configured and activated.
 
-Run: `$ pip install -r requirements.txt`
+Run: `$ pip install -r requirements.txt` and `pre-commit install` for linting
 
-This will pull and install all vessel dependencies into the current or active virtual environment. Copy the content of 
+This will pull and install all vessel dependencies into the current or active virtual environment. Copy the content of
 `.env_sample` into `.env` and set proper environment variables.
 
 
 ## Start Server
-In the `project_root` with environment activated, 
+In the `project_root` with environment activated,
 
 Run: `$ python run.py runserver`
 
@@ -24,11 +24,11 @@ Open your browser and enter `http://127.0.0.1:5000/api/v1/`
 ## vessel CLI Tool
 Vessel comes with a small CLI tool to help generate commmonly used utilities like `models`, `repositories`, `blueprints`,
  `controllers`, `tests` and `factories`
- 
+
  Example:
  ```
  Usage: python vessel.py
- 
+
  Command Line Arguments
     make:model name eg. python vessel.py make:model user [--with_repo [_controller] ]
 	make:repo name eg. python vessel.py make:repo user
@@ -40,7 +40,7 @@ Vessel comes with a small CLI tool to help generate commmonly used utilities lik
  ```
 
 ## Tests
-Ofcourse there's support for testing using pytest. To create a new test suite, simply run the make:test command on the CLI. 
+Ofcourse there's support for testing using pytest. To create a new test suite, simply run the make:test command on the CLI.
 
 eg. `$ python vessel.py make:test integration/endpoints/test_user_endpoints`
 
