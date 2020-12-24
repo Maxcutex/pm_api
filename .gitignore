@@ -1,10 +1,12 @@
 .DS_Store
 .env
 venv/
+venv_pm/
 env/
 .cache/
 .pytest_cache/
 .idea/
+.vscode/
 */__pycache/
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -25,6 +27,7 @@ eggs/
 lib/
 lib64/
 parts/
+postgres-data/
 sdist/
 var/
 wheels/
