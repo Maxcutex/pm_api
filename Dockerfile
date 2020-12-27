@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 RUN mkdir /usr/src/postgres-data
 COPY . /usr/src
 EXPOSE 5000
-CMD ["python", "run.py", "runserver"]
+CMD ["python", "run.py", "runserver", "--host=0.0.0.0"]
