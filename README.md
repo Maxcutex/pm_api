@@ -1,18 +1,34 @@
-# Introduction
-Vessel is an opinionated bootstrap of files to setup an API centric Flask application.
+# Profile Manager API
+PM Api is a python solution cloned from Vessel Api. It handles the api backend solution for Profile Manager
 
-Its aims to provide a simple set of files and configuration required for building API services using Flask.
-Vessel is strongly opinionated about how control flows across your application, but its also very extensible.
-You can install any python packages you want and/or remove the ones you do not want.
 
 ## Setup
-To use Vessel, clone this repo into `project_root`, ensure your python environments are configured and activated.
 
 Run: `$ pip install -r requirements.txt` and `pre-commit install` for linting
 
 This will pull and install all vessel dependencies into the current or active virtual environment. Copy the content of
 `.env_sample` into `.env` and set proper environment variables.
 
+On the prompt execute the following
+```
+export $(cat .env)
+```
+
+
+Execute the following code to seed the database
+```
+flask seed-database
+```
+
+Execute the following command in the terminal to start the redis server
+```
+bash redis.sh
+```
+
+Execute the following code to migrate all data tables/object
+```
+python run.py db migrate
+```
 
 ## Start Server
 In the `project_root` with environment activated,
@@ -20,6 +36,8 @@ In the `project_root` with environment activated,
 Run: `$ python run.py runserver`
 
 Open your browser and enter `http://127.0.0.1:5000/api/v1/`
+
+
 
 ## vessel CLI Tool
 Vessel comes with a small CLI tool to help generate commmonly used utilities like `models`, `repositories`, `blueprints`,
@@ -94,9 +112,75 @@ To run tests `$ python -m pytest`
     |-- run.py
     |-- vessel.py
 ```
-## Procfile
-For Heroku enthusiast. Delete if you'd not be deploying to Heroku.
 
-## Bugs, Corrections, Feedback, Contributing
-No system is 100% I'd be happy if you can jump in and collaborate. If you find bugs or errors or see places where you can improve on,
-fork the repo, and raise a PR or shoot me an email. jcobhams[at]gmail[dot]com
+### Quick Start
+Running the backend application in docker with make.
+
+Starts all services including Postgres, Redis and the api at http://localhost:4070.
+
+```
+make up
+```
+
+Rebuild and launch all containers including api at http://localhost:4070.
+```
+make buildup
+```
+
+Clean code and stop any docker container.
+```
+make stop
+```
+
+Clean code and destroy docker processes, images and volumes.
+```
+make destroy
+```
+
+Destroy docker processes, images and volumes.
+```
+make destroy-all
+```
+
+Clean code and destroy docker processes.
+```
+make down
+```
+
+Download docker images in parallel.
+```
+make pull
+```
+
+Connect to the shell inside the api container.
+```
+make shell
+```
+
+Connect to the shell inside the Postgres container.
+```
+make shell-db
+```
+
+Connect to the shell inside the Redis container.
+```
+make shell-redis
+```
+
+Remove all compiled files, coverage. 'sudo' maybe needed.
+```
+make clean
+```
+
+Seed database from seed data files.
+```
+make seed-database
+```
+
+Compile requirements.txt from requirements.in and build the images for the api service.
+```
+make pip-compile
+```
+
+Compile requirements.txt from requirements.in upgrading the packages and build the images for the api service.
+```
