@@ -17,6 +17,12 @@ class MealTypes(BaseEnum):
     protein = "protein"
 
 
+class SkillLevels(BaseEnum):
+    beginner = "beginner"
+    intermediate = "intermediate"
+    expert = "expert"
+
+
 class Channels(BaseEnum):
     web = "web"
     slack = "slack"
@@ -51,9 +57,9 @@ class FaqCategoryType(BaseEnum):
     admin_faq = "admin_faq"
 
 
-class MealSessionNames(BaseEnum):
-    breakfast = "breakfast"
-    lunch = "lunch"
+class Gender(BaseEnum):
+    male = "male"
+    female = "female"
 
 
 class WeekDays(BaseEnum):
