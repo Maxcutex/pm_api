@@ -1,19 +1,38 @@
+from datetime import datetime
+
+from app.utils.enums import Gender
 from tests.base_test_case import BaseTestCase
 
-from app.models import User, Activity
+from app.models import User, Activity, Role
 
 
 class TestHardDelete(BaseTestCase):
+    dev_role = None
+    admin_role = None
+
     def setUp(self):
         self.BaseSetUp()
+        self.create_base_roles()
 
     def tearDown(self):
         self.BaseTearDown()
+
+    def create_base_roles(self):
+        dev_role = Role(name="Engineer", help="A webspoons engineer")
+        dev_role.save()
+        self.dev_role = dev_role
+
+        admin_role = Role(name="Administrator", help="A webspoons Admin")
+        admin_role.save()
+        self.admin_role = admin_role
 
     def test_hard_delete_on_user_model(self):
         user = User(
             first_name="Fist name",
             last_name="Last name",
+            user_type_id=self.dev_role.id,
+            date_of_birth=datetime.now(),
+            gender=Gender.male,
         )
 
         user.save()
@@ -27,6 +46,9 @@ class TestHardDelete(BaseTestCase):
         user = User(
             first_name="Fist name",
             last_name="Last name",
+            user_type_id=self.dev_role.id,
+            date_of_birth=datetime.now(),
+            gender=Gender.male,
         )
 
         user.save()
@@ -39,6 +61,9 @@ class TestHardDelete(BaseTestCase):
         user = User(
             first_name="Fist name",
             last_name="Last name",
+            user_type_id=self.dev_role.id,
+            date_of_birth=datetime.now(),
+            gender=Gender.male,
         )
 
         user.save()
@@ -55,6 +80,9 @@ class TestHardDelete(BaseTestCase):
         user = User(
             first_name="Fist name",
             last_name="Last name",
+            user_type_id=self.dev_role.id,
+            date_of_birth=datetime.now(),
+            gender=Gender.male,
         )
 
         user.save()
