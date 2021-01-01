@@ -1,19 +1,36 @@
 import json
+from os import getenv, environ
+
+import jwt
+from faker import Faker
+from flask_testing import TestCase
+
 from app import create_app
 from app.utils import db
 from app.utils.auth import Auth
-from flask_testing import TestCase
-from flask import current_app
-
+from app.utils.seeders import seed_database
+from app import BackgroundScheduler
 from app.utils.redisset import RedisSet
 
 
+config_name = "testing"
+environ["APP_ENV"] = config_name
+environ["REDIS_URL"] = "redis://localhost:6379"
+fake = Faker()
+
+
 class BaseTestCase(TestCase):
+    VALID_TOKEN = None
+
     def BaseSetUp(self):
+        # monkey patch the cron scheduler before running test
+        def fn(self):
+            pass
+
+        BackgroundScheduler.start = fn
         """Define test variables and initialize app"""
         self.app = self.create_app()
         self.client = self.app.test_client
-
         self.migrate()
 
     def BaseTearDown(self):
@@ -21,15 +38,58 @@ class BaseTestCase(TestCase):
         db.session.close()
         db.session.remove()
         db.engine.dispose()
-        # RedisSet()._delete()
+        RedisSet()._delete()
+
+    @staticmethod
+    def generate_token(exp=None):
+        """
+        Generates jwt tokens for testing purpose
+
+        params:
+            exp: Token Expiration. This could be datetime object or an integer
+        result:
+            token: This is the bearer token in this format 'Bearer token'
+        """
+
+        secret_key = getenv("JWT_SECRET_KEY")
+
+        payload = {
+            "UserInfo": User().to_dict(),
+            "iss": "accounts.webspoons.com",
+            "aud": "webspoons.com",
+        }
+        payload.__setitem__("exp", exp) if exp is not None else ""
+        import pdb
+
+        pdb.set_trace()
+        token = jwt.encode(
+            payload,
+            secret_key,  # algorithm='RS256'
+        ).decode("utf-8")
+        return token
 
     @staticmethod
     def get_valid_token():
-        return "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJpZCI6Ii1MLWtkRHpwZDRlYk1FWEFFYzdIIiwiZmlyc3RfbmFtZSI6IlZpY3RvciIsImxhc3RfbmFtZSI6IkFkdWt3dSIsImZpcnN0TmFtZSI6IlZpY3RvciIsImxhc3ROYW1lIjoiQWR1a3d1IiwiZW1haWwiOiJ2aWN0b3IuYWR1a3d1QGFuZGVsYS5jb20iLCJuYW1lIjoiVmljdG9yIEFkdWt3dSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vLTVfdXlaM0paT09vL0FBQUFBQUFBQUFJL0FBQUFBQUFBQUFjL0lUUjZOcGFWbHJnL3Bob3RvLmpwZz9zej01MCIsInJvbGVzIjp7IkZlbGxvdyI6Ii1LWEd5MUVCMW9pbWpRZ0ZpbTZDIiwiQW5kZWxhbiI6Ii1LaWloZlpvc2VRZXFDNmJXVGF1In19LCJpYXQiOjE1MzU0OTI4NTksImV4cCI6MTUzODA4NDg1OSwiYXVkIjoiYW5kZWxhLmNvbSIsImlzcyI6ImFjY291bnRzLmFuZGVsYS5jb20ifQ.MWCWnHrAM8V6kxbMClwcrFvaIUP6kuCGLS1GuQqu_aYgkJEN84C0vfAQQwzVyJLQ9TennD2k8ECRyX41RuPli8ucjMCMsI2neACJOIb2xoWwlpIExzUWMsfLkPawPki-utkQEqrcLa4vt3cR4_QQC6HZvnLa7O8g9wa52DnopPw"
+
+        if not BaseTestCase.VALID_TOKEN:
+            BaseTestCase.VALID_TOKEN = BaseTestCase.generate_token()
+
+        return BaseTestCase.VALID_TOKEN
 
     @staticmethod
     def user_id():
         return Auth.decode_token(BaseTestCase.get_valid_token())["UserInfo"]["id"]
+
+    @staticmethod
+    def user_email():
+        return Auth.decode_token(BaseTestCase.get_valid_token())["UserInfo"]["email"]
+
+    @staticmethod
+    def user_first_and_last_name():
+        return (
+            Auth.decode_token(BaseTestCase.get_valid_token())["UserInfo"]["firstName"],
+            Auth.decode_token(BaseTestCase.get_valid_token())["UserInfo"]["lastName"],
+        )
 
     @staticmethod
     def get_invalid_token():
@@ -74,10 +134,14 @@ class BaseTestCase(TestCase):
         db.create_all()
 
     @staticmethod
-    def headers():
+    def seed_database():
+        seed_database.seed_db(table_name=None, testing=False)
+
+    @staticmethod
+    def headers(location_id=1):
         return {
             "Content-Type": "application/json",
-            "X-Location": "1",
+            "X-Location": f"{location_id}",
             "Authorization": "Bearer {}".format(BaseTestCase.get_valid_token()),
         }
 
@@ -117,3 +181,51 @@ class BaseTestCase(TestCase):
             assert True
         else:
             assert False
+
+    @staticmethod
+    def construct_mock_response(json_data, status_code):
+        class MockResponseClass:
+            def __init__(self, json_data, status_code):
+                self.json_data = json_data
+                self.status_code = status_code
+
+            def json(self):
+                return self.json_data
+
+        return MockResponseClass(json_data, status_code)
+
+
+class User:
+    """Class for creating user mocks"""
+
+    def __init__(self):
+        self.first_name = fake.first_name()
+        self.id = 1
+        self.last_name = fake.last_name()
+        self.firstName = self.first_name
+        self.lastName = self.last_name
+        self.email = fake.email()
+        self.name = f"{self.first_name} {self.last_name}"
+        self.picture = fake.image_url(height=None, width=None)
+        self.roles = {
+            "Technology": "-KXH7iME4ebMEXAEc7HP",
+            "Andelan": "-KiihfZoseQeqC6bWTau",
+        }
+
+    def to_dict(self):
+        """Converts the instance of this class to a dict.
+
+        Returns:
+            dict : User data dictionary.
+        """
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "firstName": self.firstName,
+            "lastName": self.lastName,
+            "email": self.email,
+            "name": self.name,
+            "picture": self.picture,
+            "roles": self.roles,
+        }

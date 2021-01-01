@@ -131,9 +131,9 @@ class Auth:
             decoded = jwt.decode(
                 token,
                 public_key,
-                algorithms=["RS256"],
-                audience="andela.com",
-                issuer="accounts.andela.com",
+                algorithms=["RS256", "HS256"],
+                audience="webspoons.com",
+                issuer="accounts.webspoons.com",
                 options={"verify_signature": True, "verify_exp": True},
             )
             return decoded
@@ -141,6 +141,25 @@ class Auth:
             raise Exception("Token is Expired")
         except jwt.DecodeError:
             raise Exception("Error Decoding")
+
+    @staticmethod
+    def encode_token(user_info_dict):
+
+        private_key = Auth._get_jwt_private_key()
+
+        try:
+            encoded = jwt.encode(
+                user_info_dict,
+                private_key,
+                algorithm="RS256",
+                audience="webspoons.com",
+                issuer="accounts.webspoons.com",
+                options={"verify_signature": True, "verify_exp": True},
+            )
+
+            return encoded
+        except jwt.PyJWTError:
+            raise Exception("Error Encoding")
 
     @staticmethod
     def check_location_header():
@@ -216,7 +235,7 @@ class Auth:
                 user_role_repo = UserRoleRepo()
                 permission_repo = PermissionRepo()
 
-                user_id = Auth.user("id")
+                user_id = Auth.user("email")
                 user_role = user_role_repo.find_first(**{"user_id": user_id})
 
                 if not user_id:

@@ -1,4 +1,4 @@
-"""RedisSet class for AndelaEats."""
+"""RedisSet class for PM."""
 from redis import Redis
 from config import get_env
 
@@ -10,7 +10,7 @@ class RedisSet(object):
     Implements a simple sorted set with Redis
     """
 
-    def __init__(self, name="redis", namespace="andela", url=None):
+    def __init__(self, name="redis", namespace="pm", url=None):
         """
         The default connection parameters are:
         host = 'localhost', port = 6379, db = 0

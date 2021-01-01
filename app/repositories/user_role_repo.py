@@ -8,10 +8,8 @@ class UserRoleRepo(BaseRepo):
         BaseRepo.__init__(self, UserRole)
         self.redis_set = RedisSet()
 
-    def new_user_role(self, role_id, user_id, location_id, email):
-        user_role = UserRole(
-            role_id=role_id, user_id=user_id, location_id=location_id, email=email
-        )
+    def new_user_role(self, role_id, user_id):
+        user_role = UserRole(role_id=role_id, user_id=user_id, is_active=True)
         user_role.save()
         self.update_cache(user_role)
         return user_role

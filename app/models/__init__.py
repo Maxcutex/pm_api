@@ -13,6 +13,7 @@ from .user_employment import UserEmployment
 from .user_employment_skills import UserEmploymentSkill
 from .user_project import UserProject
 from .user_skills import UserSkills
+from .location import Location
 
 __all__ = (
     "Role",
@@ -27,6 +28,7 @@ __all__ = (
     "UserEmploymentSkill",
     "UserEmployment",
     "UserEducation",
+    "Location",
 )
 
 from .listener_helpers import attach_listen_type
@@ -43,6 +45,7 @@ tables_logged_after_every_insert = [
     User,
     Skill,
     SkillsCategory,
+    Location,
 ]
 tables_logged_after_every_update = [
     UserEducation,
@@ -56,6 +59,7 @@ tables_logged_after_every_update = [
     User,
     Skill,
     SkillsCategory,
+    Location,
 ]
 tables_logged_after_every_delete = [
     UserEducation,
@@ -69,6 +73,7 @@ tables_logged_after_every_delete = [
     User,
     Skill,
     SkillsCategory,
+    Location,
 ]
 generate_id_tables = (User,)
 
