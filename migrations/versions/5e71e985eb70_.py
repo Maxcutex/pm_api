@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 6123517ef99d
+Revision ID: 5e71e985eb70
 Revises:
-Create Date: 2020-12-31 10:09:17.279644
+Create Date: 2020-12-31 19:30:03.247980
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "6123517ef99d"
+revision = "5e71e985eb70"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -39,13 +39,24 @@ def upgrade():
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
-        "roles",
+        "locations",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("is_deleted", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.Column("name", sa.String(length=100), nullable=False),
+        sa.Column("zone", sa.String(length=10), nullable=True),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_table(
+        "roles",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("updated_at", sa.DateTime(), nullable=True),
+        sa.Column("name", sa.String(length=100), nullable=False),
         sa.Column("help", sa.Text(), nullable=True),
+        sa.Column("is_active", sa.Boolean(), nullable=True),
+        sa.Column("is_deleted", sa.Boolean(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("name"),
     )
@@ -99,56 +110,24 @@ def upgrade():
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
-        "user_roles",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("is_deleted", sa.Boolean(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), nullable=True),
-        sa.Column("updated_at", sa.DateTime(), nullable=True),
-        sa.Column("role_id", sa.Integer(), nullable=True),
-        sa.Column("user_id", sa.String(), nullable=True),
-        sa.Column("email", sa.String(), nullable=True),
-        sa.Column("is_active", sa.Boolean(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["role_id"],
-            ["roles.id"],
-        ),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_table(
-        "user_skills",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("is_deleted", sa.Boolean(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), nullable=True),
-        sa.Column("updated_at", sa.DateTime(), nullable=True),
-        sa.Column(
-            "skill_level",
-            sa.Enum("beginner", "intermediate", "expert", name="skilllevels"),
-            nullable=True,
-        ),
-        sa.Column("years", sa.Integer(), nullable=False),
-        sa.Column("skill_id", sa.Integer(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["skill_id"],
-            ["skills.id"],
-        ),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_table(
         "users",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("is_deleted", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.Column("first_name", sa.String(), nullable=False),
         sa.Column("last_name", sa.String(), nullable=False),
         sa.Column("email", sa.String(length=100), nullable=True),
-        sa.Column("user_type_id", sa.Integer(), nullable=True),
+        sa.Column("password", sa.String(), nullable=False),
+        sa.Column("last_password", sa.String(), nullable=True),
+        sa.Column("location_id", sa.Integer(), nullable=True),
         sa.Column("image_url", sa.String(), nullable=True),
         sa.Column("gender", sa.Enum("male", "female", name="gender"), nullable=True),
         sa.Column("date_of_birth", sa.Date(), nullable=False),
+        sa.Column("is_active", sa.Boolean(), nullable=True),
+        sa.Column("is_deleted", sa.Boolean(), nullable=True),
         sa.ForeignKeyConstraint(
-            ["user_type_id"],
-            ["user_roles.id"],
+            ["location_id"],
+            ["locations.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -188,6 +167,44 @@ def upgrade():
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
+        "user_roles",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("updated_at", sa.DateTime(), nullable=True),
+        sa.Column("role_id", sa.Integer(), nullable=True),
+        sa.Column("user_id", sa.Integer(), nullable=True),
+        sa.Column("is_active", sa.Boolean(), nullable=True),
+        sa.Column("is_deleted", sa.Boolean(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ["role_id"],
+            ["roles.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"],
+            ["users.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_table(
+        "user_skills",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("is_deleted", sa.Boolean(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("updated_at", sa.DateTime(), nullable=True),
+        sa.Column(
+            "skill_level",
+            sa.Enum("beginner", "intermediate", "expert", name="skilllevels"),
+            nullable=True,
+        ),
+        sa.Column("years", sa.Integer(), nullable=False),
+        sa.Column("skill_id", sa.Integer(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ["skill_id"],
+            ["skills.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_table(
         "user_employment_skills",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("is_deleted", sa.Boolean(), nullable=False),
@@ -211,15 +228,16 @@ def upgrade():
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table("user_employment_skills")
+    op.drop_table("user_skills")
+    op.drop_table("user_roles")
     op.drop_table("user_employments")
     op.drop_table("user_education")
     op.drop_table("users")
-    op.drop_table("user_skills")
-    op.drop_table("user_roles")
     op.drop_table("skills")
     op.drop_table("permissions")
     op.drop_table("user_projects")
     op.drop_table("skill_categories")
     op.drop_table("roles")
+    op.drop_table("locations")
     op.drop_table("activities")
     # ### end Alembic commands ###

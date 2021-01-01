@@ -15,15 +15,25 @@ class UserRepo(BaseRepo):
                   [first_name, last_name, email, user_id, photo]
 
         """
-        first_name, last_name, email, image_url, *extras = args
+        (
+            first_name,
+            last_name,
+            email,
+            gender,
+            date_of_birth,
+            location_id,
+            password,
+            *extras,
+        ) = args
 
         user = User(
             first_name=first_name,
             last_name=last_name,
             email=email,
-            image_url=image_url,
-            user_id=kwargs.get("user_id"),
-            user_type_id=kwargs.get("user_type").id,
+            gender=gender,
+            date_of_birth=date_of_birth,
+            location_id=location_id,
+            password=password,
         )
         user.save()
         return user

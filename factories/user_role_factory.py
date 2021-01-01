@@ -2,7 +2,9 @@ import factory
 from app.utils import db
 from app.models.user_role import UserRole
 from factories.role_factory import RoleFactory
-from factories.location_factory import LocationFactory
+from factories.user_factory import UserFactory
+
+# from factories.location_factory import LocationFactory
 from tests.base_test_case import fake
 from app.repositories.user_role_repo import UserRoleRepo
 
@@ -13,9 +15,11 @@ class UserRoleFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = db.session
 
     role = factory.SubFactory(RoleFactory)
-    user_id = factory.Sequence(lambda n: n)
-    location = factory.SubFactory(LocationFactory)
-    location_id = factory.SelfAttribute("location.id")
+    role_id = factory.SelfAttribute("role.id")
+    user = factory.SubFactory(UserFactory)
+    user_id = factory.SelfAttribute("user.id")  # factory.Sequence(lambda n: n)
+    # location = factory.SubFactory(LocationFactory)
+    # location_id = factory.SelfAttribute("location.id")
     email = fake.email()
 
     @classmethod

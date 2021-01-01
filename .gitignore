@@ -114,3 +114,6 @@ venv.bak/
 
 #Any sql lite db
 *.db
+
+jwt-key
+jwt-key.pub

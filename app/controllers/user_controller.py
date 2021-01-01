@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from app.controllers.base_controller import BaseController
 from app.repositories import UserRoleRepo, RoleRepo, UserRepo
 from app.models import Role, User
 from app.utils.auth import Auth
+from werkzeug.security import check_password_hash, generate_password_hash
 from app.utils.id_generator import PushID
 
 
@@ -120,65 +123,65 @@ class UserController(BaseController):
         return self.handle_response("Invalid or incorrect id provided", status_code=404)
 
     def create_user(self):
-        push_id = PushID()
-        next_id = push_id.next_id()
+        # push_id = PushID()
+        # next_id = push_id.next_id()
 
         user_info = self.request_params(
-            "firstName", "lastName", "imageUrl", "slackId", "userId", "roleId"
+            "first_name",
+            "last_name",
+            "email",
+            "role_id",
+            "gender",
+            "date_of_birth",
+            "location_id",
+            "password",
         )
 
-        first_name, last_name, image_url, slack_id, user_id, role_id = user_info
+        (
+            first_name,
+            last_name,
+            email,
+            role_id,
+            gender,
+            date_of_birth,
+            location_id,
+            password,
+        ) = user_info
 
         role = self.role_repo.find_first(id=role_id)
 
+        password_hash = generate_password_hash(password)
         if not role:
             return self.handle_response(
                 f"Role with userTypeId(roleId) {role_id} does not exist",
                 status_code=400,
             )
 
-        if self.user_repo.exists(slack_id=slack_id):
+        if self.user_repo.exists(email=email) and email is not None:
             return self.handle_response(
-                f"User with slackId '{slack_id}' already exists", status_code=400
+                f"User with email '{email}' already exists", status_code=400
             )
 
-        if self.user_repo.exists(user_id=user_id) and user_id is not None:
-            return self.handle_response(
-                f"User with userId '{user_id}' already exists", status_code=400
-            )
+        user = self.user_repo.new_user(*user_info, password=password_hash).serialize()
 
-        slack_id = slack_id if slack_id else next_id
-        user_id = user_id if user_id else slack_id
-
-        user_type = self.user_role_repo.find_first(
-            user_id=user_id
-        ) or self.user_role_repo.new_user_role(
-            role_id=role_id,
-            user_id=user_id,
-            location_id=Auth.get_location(),
-            email=None,
-        )
-
-        user = self.user_repo.new_user(
-            *user_info, user_id=user_id, slack_id=slack_id, user_type=user_type
-        ).serialize()
-
+        user_role = self.user_role_repo.new_user_role(role_id=role_id, user_id=email)
+        # get user role and set to user
         user.__setitem__(
-            "userRoles", [role.to_dict(only=["id", "name", "help", "timestamps"])]
+            "user_roles",
+            [user_role.role.to_dict(only=["id", "name", "help", "timestamps"])],
         )
-        user.pop("userTypeId")
 
         return self.handle_response("OK", payload={"user": user}, status_code=201)
 
-    def list_user(self, slack_id):
+    def list_user(self, email):
 
-        user = self.user_repo.find_first(slack_id=slack_id)
+        user = self.user_repo.find_first(email=email)
 
         if user:
             user_data = user.serialize()
-            del user_data["userTypeId"]
-            user_data["userRoles"] = [
-                self.role_repo.get(user.user_type.role_id).to_dict(only=["id", "name"])
+            user_roles = self.user_role_repo.filter_all(email=email)
+            user_data["user_roles"] = [
+                user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
             ]
             return self.handle_response(
                 "OK", payload={"user": user_data}, status_code=200
@@ -186,8 +189,8 @@ class UserController(BaseController):
 
         return self.handle_response("User not found", status_code=404)
 
-    def update_user(self, user_id):
-        user = self.user_repo.get(user_id)
+    def update_user(self, email):
+        user = self.user_repo.get(email=email)
 
         if not user:
             return self.handle_response(
@@ -200,33 +203,8 @@ class UserController(BaseController):
             )
 
         user_info = self.request_params_dict(
-            "slackId", "firstName", "lastName", "userId", "imageUrl", "roleId"
+            "first_name", "last_name", "email", "roleId"
         )
-
-        slack_id = user_info.get("slack_id")
-        user_id_sent = user_info.get("user_id")
-
-        if slack_id and self.user_repo.check_exists_else_where(
-            User, "slack_id", slack_id, "id", user_id
-        ):
-            return self.handle_response(
-                msg="FAIL",
-                payload={
-                    "user": "Cannot update to the slack id of another existing user"
-                },
-                status_code=403,
-            )
-
-        if user_id_sent and self.user_repo.check_exists_else_where(
-            User, "user_id", user_id_sent, "id", user_id
-        ):
-            return self.handle_response(
-                msg="FAIL",
-                payload={
-                    "user": "Cannot update to the user id of another existing user"
-                },
-                status_code=403,
-            )
 
         if user_info.get("role_id"):
             role_id = user_info["role_id"]
@@ -239,8 +217,39 @@ class UserController(BaseController):
         user = self.user_repo.update(user, **user_info)
         user_data = user.serialize()
 
-        user_data["userRoles"] = [
-            self.role_repo.get(user.user_type.role_id).to_dict(only=["id", "name"])
+        user_roles = self.user_role_repo.filter_all(email=email)
+        user_data["user_roles"] = [
+            user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
         ]
 
         return self.handle_response("OK", payload={"user": user_data}, status_code=200)
+
+    def authenticate_user(self, user_email, password_entered):
+        user = self.user_repo.get(email=user_email)
+
+        if user is not None and check_password_hash(user.password, password_entered):
+            time_limit = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+            user_roles = self.user_role_repo.filter_all(email=user_email)
+            user_roles_list = [
+                user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
+            ]
+            user_data = {
+                "UserInfo": {
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                    "name": f"{user.first_name} {user.last_name}",
+                    "picture": "",
+                    "roles": user_roles_list,
+                },
+                "iat": datetime.datetime.utcnow(),
+                "exp": time_limit,
+                "aud": "webspoons.com",
+                "iss": "accounts.webspoons.com",
+            }
+            token = Auth.encode_token(user_data)
+            return self.handle_response("OK", payload={"token": token}, status_code=200)
+
+        return self.handle_response(
+            "Username/password combination is wrong", status_code=404
+        )
