@@ -1,4 +1,5 @@
 from app.controllers.base_controller import BaseController
+from app.repositories import UserRepo
 from app.repositories.role_repo import RoleRepo
 from app.repositories.user_role_repo import UserRoleRepo
 from app.repositories.permission_repo import PermissionRepo
@@ -13,17 +14,15 @@ class RoleController(BaseController):
         BaseController.__init__(self, request)
         self.role_repo = RoleRepo()
         self.user_role_repo = UserRoleRepo()
+        self.user_repo = UserRepo()
         self.permission_repo = PermissionRepo()
-        # self.andela_service = AndelaService()
         self.redis_set = RedisSet()
 
     """ ROLES """
 
     def list_roles(self):
         roles = self.role_repo.filter_by(is_deleted=False)
-        import pdb
 
-        pdb.set_trace()
         role_list = [role.serialize() for role in roles.items]
         return self.handle_response(
             "OK", payload={"roles": role_list, "meta": self.pagination_meta(roles)}
@@ -36,19 +35,20 @@ class RoleController(BaseController):
         return self.handle_response("Invalid or Missing role_id", status_code=400)
 
     def create_role(self):
-        import pdb
-
-        pdb.set_trace()
         name, help_ = self.request_params("name", "help")
         role1 = self.role_repo.find_first(name=name)
-        import pdb
 
-        pdb.set_trace()
         if not role1:
-            role = self.role_repo.new_role(name=name, help_=help_)
-            return self.handle_response(
-                "OK", payload={"role": role.serialize()}, status_code=201
-            )
+            try:
+                role = self.role_repo.new_role(name=name, help_=help_)
+                return self.handle_response(
+                    "OK", payload={"role": role.serialize()}, status_code=201
+                )
+            except Exception as e:
+                return self.handle_response(
+                    "Error processing: " + str(e), status_code=400
+                )
+
         return self.handle_response(
             "Role with this name already exists", status_code=400
         )
@@ -95,33 +95,37 @@ class RoleController(BaseController):
         return self.handle_response("There are no roles for this user", status_code=404)
 
     def create_user_role(self):
-        location = Auth.get_location()
-        role_id, email_address = self.request_params("roleId", "emailAddress")
-        user = self.andela_service.get_user_by_email_or_id(email_address)
-        if user is None:
-            return self.handle_response(
-                "This user record does not exist", status_code=400
-            )
-        user_id = user["id"]
-        user_role = self.user_role_repo.get_unpaginated(
-            role_id=role_id, user_id=user_id, is_deleted=False
-        )
-        if not user_role:
-            role = self.role_repo.get(role_id)
-            if role:
-                user_role = self.user_role_repo.new_user_role(
-                    role_id=role_id,
-                    user_id=user_id,
-                    location_id=location,
-                    email=email_address,
-                )
-                user_role_data = user_role.serialize()
-                user_role_data.update({"name": user.get("name")})
+        try:
+            role_id, user_id = self.request_params("role_id", "user_id")
+            user = self.user_repo.find_first(id=user_id)
+            if user is None:
                 return self.handle_response(
-                    "OK", payload={"user_role": user_role_data}, status_code=201
+                    "This user record does not exist", status_code=400
                 )
-            return self.handle_response("This role does not exist", status_code=400)
-        return self.handle_response("This User has this Role already", status_code=400)
+            user_id = user.id
+            user_role = self.user_role_repo.get_unpaginated(
+                role_id=role_id, user_id=user_id, is_deleted=False
+            )
+            if not user_role:
+                role = self.role_repo.get(role_id)
+                if role:
+                    user_role = self.user_role_repo.new_user_role(
+                        role_id=role_id,
+                        user_id=user_id,
+                    )
+                    user_role_data = user_role.serialize()
+                    user_role_data.update(
+                        {"name": f"{user.first_name} {user.last_name}"}
+                    )
+                    return self.handle_response(
+                        "OK", payload={"user_role": user_role_data}, status_code=201
+                    )
+                return self.handle_response("This role does not exist", status_code=400)
+            return self.handle_response(
+                "This User has this Role already", status_code=400
+            )
+        except Exception as e:
+            return self.handle_response("Error Occurred: " + str(e), status_code=400)
 
     def delete_user_role(self, user_role_id):
         user_role = self.user_role_repo.get(user_role_id)

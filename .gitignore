@@ -117,3 +117,6 @@ venv.bak/
 
 jwt-key
 jwt-key.pub
+
+#redis locally
+redis-stable

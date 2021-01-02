@@ -16,34 +16,36 @@ user_controller = UserController(request)
 
 
 @user_blueprint.route("/admin", methods=["GET"])
-@Auth.has_permission("create_user_roles")
+@Auth.has_permission(["create_user_roles"])
 # @swag_from('documentation/get_all_admin_users.yml')
 def list_admin_users():
     return user_controller.list_admin_users()
 
 
 @user_blueprint.route("/", methods=["GET"])
-@Auth.has_permission("view_users")
+@Auth.has_permission(["view_users"])
 # @swag_from('documentation/get_all_users.yml')
 def list_all_users():
     return user_controller.list_all_users()
 
 
 @user_blueprint.route("/<int:id>/", methods=["DELETE"])
-@Auth.has_permission("delete_user")
+@Auth.has_permission(["delete_user"])
 # @swag_from('documentation/delete_user.yml')
 def delete_user(id):
     return user_controller.delete_user(id)
 
 
 @user_blueprint.route("/", methods=["POST"])
-@Auth.has_permission("create_user")
+@Auth.has_permission(["create_user"])
 @Security.validator(
     [
-        "slackId|optional",
-        "roleId|required",
-        "firstName|required",
-        "lastName|required",
+        "role_id|required",
+        "gender|required",
+        "date_of_birth|required",
+        "password|required",
+        "first_name|required",
+        "last_name|required",
         "userId|optional",
         "imageUrl|optional:url",
     ]
@@ -53,22 +55,39 @@ def create_user():
     return user_controller.create_user()
 
 
-@user_blueprint.route("/<string:slack_id>/", methods=["GET"])
-@Auth.has_permission("view_users")
+@user_blueprint.route("/register/", methods=["POST"])
+@Security.validator(
+    [
+        "role_id|required",
+        "gender|required",
+        "date_of_birth|required",
+        "password|required",
+        "first_name|required",
+        "last_name|required",
+        "userId|optional",
+        "imageUrl|optional:url",
+    ]
+)
+# @swag_from('documentation/create_user.yml')
+def register():
+    return user_controller.register()
+
+
+@user_blueprint.route("/<int:id>/", methods=["GET"])
+@Auth.has_permission(["view_users", "view_users_self"])
 # @swag_from('documentation/get_user.yml')
-def list_user(slack_id):
-    return user_controller.list_user(slack_id)
+def list_user(id):
+    return user_controller.list_user(id)
 
 
 @user_blueprint.route("/<int:user_id>", methods=["PUT", "PATCH"])
-@Auth.has_permission("update_user")
+@Auth.has_permission(["update_user", "update_user_self"])
 @Security.validator(
     [
-        "slackId|optional",
-        "roleId|optional",
-        "firstName|optional",
-        "lastName|optional",
-        "userId|optional",
+        "role_id|optional",
+        "first_name|optional",
+        "last_name|optional",
+        "user_id|optional",
         "imageUrl|optional:url",
     ]
 )
@@ -77,5 +96,6 @@ def update_user(user_id):
     return user_controller.update_user(user_id)
 
 
-def authenticate_user(user_email, password):
-    return user_controller.authenticate_user(user_email, password)
+@user_blueprint.route("/login", methods=["POST"])
+def authenticate_user():
+    return user_controller.authenticate_user()

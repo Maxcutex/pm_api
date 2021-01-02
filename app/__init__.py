@@ -8,7 +8,8 @@ from app.utils import db  # , timedelta
 from app.blueprints.base_blueprint import BaseBlueprint
 from apscheduler.schedulers.background import BackgroundScheduler
 
-# from app.utils.auth import Auth
+from app.utils.auth import Auth
+
 bugsnag.configure(
     api_key=get_env("BUGSNAG_API_KEY"),
     project_root=get_env("BUGSNAG_PROJECT_ROOT"),

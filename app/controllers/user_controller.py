@@ -1,7 +1,7 @@
-from datetime import datetime
+import datetime
 
 from app.controllers.base_controller import BaseController
-from app.repositories import UserRoleRepo, RoleRepo, UserRepo
+from app.repositories import UserRoleRepo, RoleRepo, UserRepo, PermissionRepo
 from app.models import Role, User
 from app.utils.auth import Auth
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -26,6 +26,7 @@ class UserController(BaseController):
         self.user_role_repo = UserRoleRepo()
         self.role_repo = RoleRepo()
         self.user_repo = UserRepo()
+        self.perm_repo = PermissionRepo()
 
     def list_admin_users(self, admin_role_id: int = 1) -> list:
         """
@@ -49,11 +50,9 @@ class UserController(BaseController):
         admin_users_list = []
         for user_role in user_roles.items:
             admin_user_profile = {}
-            andela_user_profile = self.andela_service.get_user_by_email_or_id(
-                user_role.user_id
-            ) or self.andela_service.get_user_by_email_or_id(user_role.email)
+            user = self.user_repo.find_first(id=user_role.user_id)
 
-            if andela_user_profile:
+            if user:
                 associated_roles = [
                     user_role.role_id
                     for user_role in self.user_role_repo.filter_by(
@@ -65,9 +64,9 @@ class UserController(BaseController):
                     {"role_id": role.id, "role_name": role.name}
                     for role in role_objects
                 ]
-                admin_user_profile["email"] = andela_user_profile["email"]
-                admin_user_profile["name"] = andela_user_profile["name"]
-                admin_user_profile["id"] = andela_user_profile["id"]
+                admin_user_profile["email"] = user.email
+                admin_user_profile["name"] = f"{user.first_name} {user.last_name}"
+                admin_user_profile["id"] = user.id
                 admin_user_profile["roles"] = roles
                 admin_user_profile["user_role_id"] = user_role.id
 
@@ -94,13 +93,12 @@ class UserController(BaseController):
                 associated_roles = [
                     user_role.role_id
                     for user_role in self.user_role_repo.filter_by(
-                        user_id=user["userId"]
+                        user_id=user["id"]
                     ).items
                 ]
                 role_objects = Role.query.filter(Role.id.in_(associated_roles)).all()
                 roles = [{"id": role.id, "name": role.name} for role in role_objects]
-                user["userRoles"] = roles
-                del user["userTypeId"]
+                user["user_roles"] = roles
             return self.handle_response(
                 "OK", payload={"users": user_list, "meta": self.pagination_meta(users)}
             )
@@ -147,39 +145,97 @@ class UserController(BaseController):
             location_id,
             password,
         ) = user_info
-
+        print("initial")
         role = self.role_repo.find_first(id=role_id)
-
-        password_hash = generate_password_hash(password)
         if not role:
             return self.handle_response(
                 f"Role with userTypeId(roleId) {role_id} does not exist",
                 status_code=400,
             )
-
+        print("after role")
         if self.user_repo.exists(email=email) and email is not None:
             return self.handle_response(
                 f"User with email '{email}' already exists", status_code=400
             )
+        print("here hre")
+        try:
+            user = self.user_repo.new_user(*user_info).serialize()
+            user_role = self.user_role_repo.new_user_role(
+                role_id=role_id, user_id=user["id"]
+            )
 
-        user = self.user_repo.new_user(*user_info, password=password_hash).serialize()
+            # get user role and set to user
+            user.__setitem__(
+                "user_roles",
+                [user_role.role.to_dict(only=["id", "name", "help", "timestamps"])],
+            )
 
-        user_role = self.user_role_repo.new_user_role(role_id=role_id, user_id=email)
-        # get user role and set to user
-        user.__setitem__(
-            "user_roles",
-            [user_role.role.to_dict(only=["id", "name", "help", "timestamps"])],
+            return self.handle_response("OK", payload={"user": user}, status_code=201)
+        except Exception as e:
+            print(str(e))
+            return self.handle_response(
+                "User could not be created" + str(e), status_code=404
+            )
+
+    def register(self):
+
+        user_info = self.request_params(
+            "first_name",
+            "last_name",
+            "email",
+            "role_id",
+            "gender",
+            "date_of_birth",
+            "location_id",
+            "password",
         )
 
-        return self.handle_response("OK", payload={"user": user}, status_code=201)
+        (
+            first_name,
+            last_name,
+            email,
+            role_id,
+            gender,
+            date_of_birth,
+            location_id,
+            password,
+        ) = user_info
 
-    def list_user(self, email):
+        role = self.role_repo.find_first(id=role_id)
+        if not role:
+            return self.handle_response(
+                f"Role with userTypeId(roleId) {role_id} does not exist",
+                status_code=400,
+            )
+        if self.user_repo.exists(email=email) and email is not None:
+            return self.handle_response(
+                f"User with email '{email}' already exists", status_code=400
+            )
+        try:
+            user = self.user_repo.new_user(*user_info).serialize()
+            user_role = self.user_role_repo.new_user_role(
+                role_id=role_id, user_id=user["id"]
+            )
 
-        user = self.user_repo.find_first(email=email)
+            # get user role and set to user
+            user.__setitem__(
+                "user_roles",
+                [user_role.role.to_dict(only=["id", "name", "help", "timestamps"])],
+            )
+
+            return self.handle_response("OK", payload={"user": user}, status_code=201)
+        except Exception as e:
+            return self.handle_response(
+                "User could not be registered" + str(e), status_code=404
+            )
+
+    def list_user(self, id):
+
+        user = self.user_repo.find_first(id=id)
 
         if user:
             user_data = user.serialize()
-            user_roles = self.user_role_repo.filter_all(email=email)
+            user_roles = self.user_role_repo.get_unpaginated(user_id=id)
             user_data["user_roles"] = [
                 user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
             ]
@@ -189,8 +245,8 @@ class UserController(BaseController):
 
         return self.handle_response("User not found", status_code=404)
 
-    def update_user(self, email):
-        user = self.user_repo.get(email=email)
+    def update_user(self, user_id):
+        user = self.user_repo.find_first_(id=user_id)
 
         if not user:
             return self.handle_response(
@@ -203,7 +259,7 @@ class UserController(BaseController):
             )
 
         user_info = self.request_params_dict(
-            "first_name", "last_name", "email", "roleId"
+            "first_name", "last_name", "email", "role_id"
         )
 
         if user_info.get("role_id"):
@@ -212,29 +268,41 @@ class UserController(BaseController):
                 return self.handle_response(
                     f"Role with id {role_id} doesnot exist", status_code=400
                 )
-            self.user_role_repo.update(user.user_type, role_id=role_id)
+            # refactor this to get value of role to be updated
+            print("befor")
+            all_u = self.user_role_repo.get_unpaginated()
+            print(all_u)
+            print(all_u[0].__dict__)
+            print(all_u[1].__dict__)
+            user_role = self.user_role_repo.find_first(user_id=user_id)
+            print(user_id)
+            print(user_role)
+            print("after")
+            self.user_role_repo.update(user_role, user_id=user_id, role_id=role_id)
 
         user = self.user_repo.update(user, **user_info)
         user_data = user.serialize()
 
-        user_roles = self.user_role_repo.filter_all(email=email)
+        user_roles = self.user_role_repo.get_unpaginated(user_id=user_id)
         user_data["user_roles"] = [
             user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
         ]
 
         return self.handle_response("OK", payload={"user": user_data}, status_code=200)
 
-    def authenticate_user(self, user_email, password_entered):
-        user = self.user_repo.get(email=user_email)
+    def authenticate_user(self):
+        username, password = self.request_params("username", "password")
+        user = self.user_repo.find_first(email=username)
 
-        if user is not None and check_password_hash(user.password, password_entered):
+        if user is not None and check_password_hash(user.password, password):
             time_limit = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-            user_roles = self.user_role_repo.filter_all(email=user_email)
+            user_roles = self.user_role_repo.get_unpaginated(user_id=user.id)
             user_roles_list = [
                 user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
             ]
             user_data = {
                 "UserInfo": {
+                    "id": user.id,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                     "email": user.email,

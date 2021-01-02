@@ -4,9 +4,11 @@ from datetime import datetime
 from unittest.mock import patch, MagicMock
 
 from app.controllers.role_controller import RoleController
+from app.models import User
 from app.models.permission import Permission
 from app.models.role import Role
 from app.models.user_role import UserRole
+from app.repositories import UserRepo
 from app.repositories.role_repo import RoleRepo
 from app.repositories.user_role_repo import UserRoleRepo
 from app.repositories.permission_repo import PermissionRepo
@@ -28,9 +30,20 @@ class TestRoleController(BaseTestCase):
         self.mock_user_role = UserRole(
             id=1,
             role_id=1,
-            location_id=1,
             user_id=1,
             is_active=True,
+            is_deleted=False,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+        self.mock_user = User(
+            id=1,
+            first_name="test",
+            last_name="test",
+            gender="male",
+            password="test",
+            is_active=True,
+            is_deleted=False,
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
@@ -284,10 +297,10 @@ class TestRoleController(BaseTestCase):
 
     @patch("app.Auth.get_location")
     @patch.object(RoleController, "request_params")
-    # @patch.object(AndelaService, 'get_user_by_email_or_id')
+    @patch.object(UserRepo, "find_first")
     def test_create_user_role_when_user_doesnot_exist(
         self,
-        mock_andela_service_get_user,
+        mock_user_repo_find_first,
         mock_role_controller_request_params,
         mock_auth_get_location,
     ):
@@ -295,7 +308,7 @@ class TestRoleController(BaseTestCase):
         # Arrange
         with self.app.app_context():
             mock_role_controller_request_params.return_value = (1, "joseph@mail.com")
-            mock_andela_service_get_user.return_value = None
+            mock_user_repo_find_first.return_value = None
             mock_auth_get_location.return_value = 1
             role_controler = RoleController(self.request_context)
 
@@ -304,15 +317,15 @@ class TestRoleController(BaseTestCase):
 
             # Assert
             assert result.status_code == 400
-            assert result.get_json()["msg"] == "This user record does" " not exist"
+            assert result.get_json()["msg"] == "This user record does not exist"
 
     @patch.object(UserRoleRepo, "get_unpaginated")
     @patch("app.Auth.get_location")
     @patch.object(RoleController, "request_params")
-    # @patch.object(AndelaService, 'get_user_by_email_or_id')
+    @patch.object(UserRepo, "find_first")
     def test_create_user_role_when_user_already_assigned_to_role(
         self,
-        mock_andela_service_get_user,
+        mock_user_repo_find_first,
         mock_role_controller_request_params,
         mock_auth_get_location,
         mock_user_role_repo_get_unpaginated,
@@ -321,10 +334,7 @@ class TestRoleController(BaseTestCase):
         # Arrange
         with self.app.app_context():
             mock_role_controller_request_params.return_value = (1, "joseph@mail.com")
-            mock_andela_service_get_user.return_value = {
-                "id": 1,
-                "mail": "joseph@mail.com",
-            }
+            mock_user_repo_find_first.return_value = self.mock_user
             mock_auth_get_location.return_value = 1
             mock_user_role_repo_get_unpaginated.return_value = self.mock_user_role
             role_controler = RoleController(self.request_context)
@@ -340,10 +350,10 @@ class TestRoleController(BaseTestCase):
     @patch.object(UserRoleRepo, "get_unpaginated")
     @patch("app.Auth.get_location")
     @patch.object(RoleController, "request_params")
-    # @patch.object(AndelaService, 'get_user_by_email_or_id')
+    @patch.object(UserRepo, "find_first")
     def test_create_user_role_when_role_doesnot_exist(
         self,
-        mock_andela_service_get_user,
+        mock_user_repo_find_first,
         mock_role_controller_request_params,
         mock_auth_get_location,
         mock_user_role_repo_get_unpaginated,
@@ -353,10 +363,7 @@ class TestRoleController(BaseTestCase):
         # Arrange
         with self.app.app_context():
             mock_role_controller_request_params.return_value = (1, "joseph@mail.com")
-            mock_andela_service_get_user.return_value = {
-                "id": 1,
-                "mail": "joseph@mail.com",
-            }
+            mock_user_repo_find_first.return_value = self.mock_user
             mock_auth_get_location.return_value = 1
             mock_user_role_repo_get_unpaginated.return_value = None
             mock_user_role_repo_get.return_value = None
@@ -374,10 +381,10 @@ class TestRoleController(BaseTestCase):
     @patch.object(UserRoleRepo, "get_unpaginated")
     @patch("app.Auth.get_location")
     @patch.object(RoleController, "request_params")
-    # @patch.object(AndelaService, 'get_user_by_email_or_id')
+    @patch.object(UserRepo, "find_first")
     def test_create_user_role_ok_response(
         self,
-        mock_andela_service_get_user,
+        mock_user_repo_find_first,
         mock_role_controller_request_params,
         mock_auth_get_location,
         mock_user_role_repo_get_unpaginated,
@@ -388,18 +395,17 @@ class TestRoleController(BaseTestCase):
         # Arrange
         with self.app.app_context():
             mock_role_controller_request_params.return_value = (1, "joseph@mail.com")
-            mock_andela_service_get_user.return_value = {
-                "id": 1,
-                "mail": "joseph@mail.com",
-            }
+
             mock_auth_get_location.return_value = 1
+            mock_user_repo_find_first.return_value = self.mock_user
             mock_user_role_repo_get_unpaginated.return_value = None
             mock_role_repo_get.return_value = self.mock_role
             mock_user_role_repo_new_user_role.return_value = self.mock_user_role
-            role_controler = RoleController(self.request_context)
+            role_controller = RoleController(self.request_context)
 
             # Act
-            result = role_controler.create_user_role()
+            result = role_controller.create_user_role()
+            print(result)
 
             # Assert
             assert result.status_code == 201

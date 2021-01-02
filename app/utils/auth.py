@@ -16,6 +16,7 @@ class Auth:
         "/locations",
         "/docs",
         "/apidocs",
+        "/api/v1/users/login",
         "/flasgger_static",
         "/apispec_1.json",
         "/bot",
@@ -25,6 +26,7 @@ class Auth:
     authentication_header_ignore = [
         "/docs",
         "/apidocs",
+        "/api/v1/users/login",
         "/flasgger_static",
         "/apispec_1.json",
         "/bot",
@@ -43,7 +45,6 @@ class Auth:
                 token = Auth.get_token()
             except Exception as e:
                 return make_response(jsonify({"msg": str(e)}), 400)
-
             try:
                 Auth.decode_token(token)
             except Exception as e:
@@ -83,11 +84,8 @@ class Auth:
         }
 
         app_env = getenv("APP_ENV", "production")
-
         public_key_64 = getenv(jwt_env_mapper.get(app_env, "JWT_PUBLIC_KEY"))
-
         public_key = public_key_mapper.get(app_env, decode_public_key)(public_key_64)
-
         return public_key
 
     @staticmethod
@@ -125,16 +123,15 @@ class Auth:
     @staticmethod
     def decode_token(token):
 
-        public_key = Auth._get_jwt_public_key()
-
+        # public_key = Auth._get_jwt_public_key()
+        public_key = str(getenv("JWT_SECRET_KEY"))
         try:
             decoded = jwt.decode(
                 token,
                 public_key,
-                algorithms=["RS256", "HS256"],
                 audience="webspoons.com",
                 issuer="accounts.webspoons.com",
-                options={"verify_signature": True, "verify_exp": True},
+                options={"verify_exp": True},
             )
             return decoded
         except jwt.ExpiredSignature:
@@ -145,17 +142,11 @@ class Auth:
     @staticmethod
     def encode_token(user_info_dict):
 
-        private_key = Auth._get_jwt_private_key()
-
+        # private_key = Auth._get_jwt_private_key()
+        private_key = str(getenv("JWT_SECRET_KEY"))
         try:
-            encoded = jwt.encode(
-                user_info_dict,
-                private_key,
-                algorithm="RS256",
-                audience="webspoons.com",
-                issuer="accounts.webspoons.com",
-                options={"verify_signature": True, "verify_exp": True},
-            )
+
+            encoded = jwt.encode(user_info_dict, private_key).decode("utf-8")
 
             return encoded
         except jwt.PyJWTError:
@@ -194,7 +185,9 @@ class Auth:
 
                 user_id = Auth.user("id")
                 user_role = user_role_repo.find_first(**{"user_id": user_id})
+                import pdb
 
+                pdb.set_trace()
                 if not user_id:
                     return (
                         make_response(jsonify({"msg": "Missing User ID in token"})),
@@ -204,7 +197,7 @@ class Auth:
                 if not user_role:
                     return (
                         make_response(
-                            jsonify({"msg": "Access Error - No Role Granted"})
+                            jsonify({"msg": "Access Error - `No Role Granted`"})
                         ),
                         401,
                     )
@@ -235,28 +228,32 @@ class Auth:
                 user_role_repo = UserRoleRepo()
                 permission_repo = PermissionRepo()
 
-                user_id = Auth.user("email")
-                user_role = user_role_repo.find_first(**{"user_id": user_id})
+                user_id = Auth.user("id")
 
+                user_roles = user_role_repo.get_unpaginated(user_id=user_id)
+                print(user_id)
+                print(user_roles)
                 if not user_id:
                     return (
                         make_response(jsonify({"msg": "Missing User ID in token"})),
                         401,
                     )
 
-                if not user_role:
+                if not user_roles:
                     return (
                         make_response(
                             jsonify({"msg": "Access Error - No Role Granted"})
                         ),
                         401,
                     )
-
-                user_perms = permission_repo.get_unpaginated(
-                    **{"role_id": user_role.role_id}
-                )
-
+                user_perms = []
+                for user_role in user_roles:
+                    user_perms += permission_repo.get_unpaginated(
+                        **{"role_id": user_role.role_id}
+                    )
+                print(user_perms)
                 perms = [perm.keyword for perm in user_perms]
+
                 if len(perms) == 0:
                     return (
                         make_response(
@@ -264,15 +261,16 @@ class Auth:
                         ),
                         401,
                     )
+                check = all(item in permission for item in perms)
 
-                if permission not in perms:
+                if check is False:
                     return (
                         make_response(
                             jsonify({"msg": "Access Error - Permission Denied"})
                         ),
                         401,
                     )
-
+                print("done")
                 return f(*args, **kwargs)
 
             return decorated

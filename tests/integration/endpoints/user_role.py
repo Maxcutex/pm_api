@@ -5,9 +5,8 @@ from factories.user_role_factory import UserRoleFactory
 from factories.permission_factory import PermissionFactory
 
 
-def create_user_role(keyword):
-    role = RoleFactory.create()
-    role_id = factory.SelfAttribute("role.id")
+def create_user_role(keyword, role_name):
+    role = RoleFactory.create(name=role_name)
     user_id = BaseTestCase.user_id()
     PermissionFactory.create(keyword=keyword, role=role)
-    return UserRoleFactory.create(user_id=user_id, role_id=role_id), user_id
+    return UserRoleFactory.create(user_id=user_id, role=role), user_id
