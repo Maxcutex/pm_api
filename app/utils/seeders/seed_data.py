@@ -9,8 +9,8 @@ location_data = [
     {"id": "4", "name": "Kigali", "zone": "+2"},
 ]
 role_data = [
-    {"id": "1", "name": "admin"},
-    {"id": "2", "name": "user"},
+    {"id": "1", "name": "admin", "is_active": True, "is_deleted": False},
+    {"id": "2", "name": "user", "is_active": True, "is_deleted": False},
 ]
 
 user_data = [
@@ -25,6 +25,8 @@ user_data = [
         "image_url": "",
         "gender": "male",
         "date_of_birth": "1970-04-23",
+        "is_active": True,
+        "is_deleted": False,
     },
     {
         "id": "2",
@@ -37,12 +39,14 @@ user_data = [
         "image_url": "",
         "gender": "male",
         "date_of_birth": "1970-04-23",
+        "is_active": True,
+        "is_deleted": False,
     },
 ]
 
 user_role_data = [
-    {"id": "1", "role_id": "1", "user_id": 1},
-    {"id": "2", "role_id": "1", "user_id": 2},
+    {"id": "1", "role_id": "1", "user_id": 1, "is_active": True, "is_deleted": False},
+    {"id": "2", "role_id": "1", "user_id": 2, "is_active": True, "is_deleted": False},
 ]
 
 permission_data = [
@@ -121,4 +125,11 @@ permission_data = [
     {"id": "23", "name": "delete_user", "role_id": "1", "keyword": "delete_user"},
     {"id": "24", "name": "create_user", "role_id": "1", "keyword": "create_user"},
     {"id": "25", "name": "update_user", "role_id": "1", "keyword": "update_user"},
+    {"id": "26", "name": "view_user_self", "role_id": "2", "keyword": "view_user_self"},
+    {
+        "id": "27",
+        "name": "update_user_self",
+        "role_id": "2",
+        "keyword": "update_user_self",
+    },
 ]

@@ -16,7 +16,8 @@ def add_activity(target, listener_type="insert"):
     : return: None
     """
     try:
-        user_id = auth.Auth.user("UserInfo").get("id")
+        user_id = auth.Auth.user("UserInfo").get("email")
+        # user_id = str(user_id)
         ip_address = request.remote_addr
     except Exception:
         user_id = "unknown"

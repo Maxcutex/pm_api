@@ -30,7 +30,9 @@ class TestHardDelete(BaseTestCase):
         user = User(
             first_name="Fist name",
             last_name="Last name",
-            user_type_id=self.dev_role.id,
+            email="test@email.com",
+            password="asdfasdf",
+            location_id=1,
             date_of_birth=datetime.now(),
             gender=Gender.male,
         )
@@ -46,7 +48,9 @@ class TestHardDelete(BaseTestCase):
         user = User(
             first_name="Fist name",
             last_name="Last name",
-            user_type_id=self.dev_role.id,
+            email="test@email.com",
+            password="asdfasdf",
+            location_id=1,
             date_of_birth=datetime.now(),
             gender=Gender.male,
         )
@@ -61,7 +65,9 @@ class TestHardDelete(BaseTestCase):
         user = User(
             first_name="Fist name",
             last_name="Last name",
-            user_type_id=self.dev_role.id,
+            email="test@email.com",
+            password="asdfasdf",
+            location_id=1,
             date_of_birth=datetime.now(),
             gender=Gender.male,
         )
@@ -80,7 +86,9 @@ class TestHardDelete(BaseTestCase):
         user = User(
             first_name="Fist name",
             last_name="Last name",
-            user_type_id=self.dev_role.id,
+            email="test@email.com",
+            password="asdfasdf",
+            location_id=1,
             date_of_birth=datetime.now(),
             gender=Gender.male,
         )

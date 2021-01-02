@@ -1,3 +1,7 @@
+import datetime
+
+from werkzeug.security import generate_password_hash
+
 from app.repositories.base_repo import BaseRepo
 from app.models.user import User
 
@@ -19,21 +23,27 @@ class UserRepo(BaseRepo):
             first_name,
             last_name,
             email,
+            role_id,
             gender,
             date_of_birth,
             location_id,
             password,
             *extras,
         ) = args
-
+        print(args)
+        phash = generate_password_hash(password)
+        print(phash)
+        print(password)
+        print(date_of_birth)
+        print("email ==", email)
         user = User(
             first_name=first_name,
             last_name=last_name,
             email=email,
             gender=gender,
-            date_of_birth=date_of_birth,
+            date_of_birth=datetime.datetime.strptime(date_of_birth, "%Y-%m-%d"),
             location_id=location_id,
-            password=password,
+            password=phash,
         )
         user.save()
         return user

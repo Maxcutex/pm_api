@@ -20,13 +20,7 @@ class BaseModel(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-            print("commited")
-        except (exc.IntegrityError, exc.InvalidRequestError) as e:
-            print("error occured===" + str(e))
-            import pdb
-
-            pdb.set_trace()
-
+        except (exc.IntegrityError, exc.InvalidRequestError):
             db.session().rollback()
 
     def delete(self):
@@ -47,7 +41,7 @@ class BaseModel(db.Model):
 
     def serialize(self, get_children=False):
         s = {
-            to_camel_case(column.name): getattr(self, column.name)
+            column.name: getattr(self, column.name)
             for column in self.__table__.columns
             if column.name
             not in ["created_at", "updated_at", "start_time", "stop_time"]

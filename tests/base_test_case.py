@@ -15,7 +15,7 @@ from app.utils.redisset import RedisSet
 
 config_name = "testing"
 environ["APP_ENV"] = config_name
-environ["REDIS_URL"] = "redis://localhost:6379"
+environ["REDIS_URL"] = "redis://127.0.0.1:6379"
 fake = Faker()
 
 
@@ -59,9 +59,7 @@ class BaseTestCase(TestCase):
             "aud": "webspoons.com",
         }
         payload.__setitem__("exp", exp) if exp is not None else ""
-        import pdb
 
-        pdb.set_trace()
         token = jwt.encode(
             payload,
             secret_key,  # algorithm='RS256'
@@ -73,7 +71,6 @@ class BaseTestCase(TestCase):
 
         if not BaseTestCase.VALID_TOKEN:
             BaseTestCase.VALID_TOKEN = BaseTestCase.generate_token()
-
         return BaseTestCase.VALID_TOKEN
 
     @staticmethod
