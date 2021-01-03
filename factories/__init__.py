@@ -3,3 +3,4 @@ from .role_factory import RoleFactory
 from .user_role_factory import UserRoleFactory
 from .user_factory import UserFactory
 from .location_factory import LocationFactory
+from .skill_category_factory import SkillsCategoryFactory, SkillsCategoryFactoryFake

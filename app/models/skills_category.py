@@ -1,10 +1,11 @@
 from .base_model import BaseModel, db
-from app.utils.enums import Gender
 
 
 class SkillsCategory(BaseModel):
 
     __tablename__ = "skill_categories"
 
-    gender = db.Column(db.Enum(Gender))
-    date_of_birth = db.Column(db.Date(), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    help = db.Column(db.Text(), nullable=True)
+    is_active = db.Column(db.Boolean, default=True, nullable=True)
+    is_deleted = db.Column(db.Boolean, default=False, nullable=True)
