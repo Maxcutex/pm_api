@@ -132,4 +132,28 @@ permission_data = [
         "role_id": "2",
         "keyword": "update_user_self",
     },
+    {
+        "id": "28",
+        "name": "view_skills_categories",
+        "role_id": "1",
+        "keyword": "view_skills_categories",
+    },
+    {
+        "id": "29",
+        "name": "delete_skills_categories",
+        "role_id": "1",
+        "keyword": "delete_skills_categories",
+    },
+    {
+        "id": "30",
+        "name": "create_skills_categories",
+        "role_id": "1",
+        "keyword": "create_skills_categories",
+    },
+    {
+        "id": "31",
+        "name": "update_skills_categories",
+        "role_id": "1",
+        "keyword": "update_skills_categories",
+    },
 ]

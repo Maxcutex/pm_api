@@ -4,3 +4,4 @@ from .role_repo import RoleRepo
 from .user_repo import UserRepo
 from .user_role_repo import UserRoleRepo
 from .permission_repo import PermissionRepo
+from .skills_category_repo import SkillsCategoryRepo
