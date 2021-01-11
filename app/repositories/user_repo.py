@@ -30,12 +30,7 @@ class UserRepo(BaseRepo):
             password,
             *extras,
         ) = args
-        print(args)
         phash = generate_password_hash(password)
-        print(phash)
-        print(password)
-        print(date_of_birth)
-        print("email ==", email)
         user = User(
             first_name=first_name,
             last_name=last_name,

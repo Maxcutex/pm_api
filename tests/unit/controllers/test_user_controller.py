@@ -135,7 +135,6 @@ class TestUserController(BaseTestCase):
 
             # Act
             result = user_controller.create_user()
-            print(result)
 
             # Assert
             assert result.status_code == 201
@@ -189,7 +188,6 @@ class TestUserController(BaseTestCase):
             user_controller = UserController(self.request_context)
 
             response = user_controller.list_user(id=self.mock_user.id)
-            print(response)
 
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.get_json()["msg"], "OK")

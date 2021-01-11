@@ -19,9 +19,11 @@ class BaseBlueprint:
         from app.blueprints.role_blueprint import role_blueprint
         from app.blueprints.activity_blueprint import activity_blueprint
         from app.blueprints.skills_category_blueprint import skills_category_blueprint
+        from app.blueprints.user_employment_blueprint import user_employment_blueprint
 
         self.app.register_blueprint(home_blueprint)
         self.app.register_blueprint(activity_blueprint)
         self.app.register_blueprint(role_blueprint)
         self.app.register_blueprint(user_blueprint)
         self.app.register_blueprint(skills_category_blueprint)
+        self.app.register_blueprint(user_employment_blueprint)

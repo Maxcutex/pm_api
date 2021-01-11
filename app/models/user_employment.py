@@ -1,5 +1,4 @@
 from .base_model import BaseModel, db
-from app.utils.enums import Gender
 
 
 class UserEmployment(BaseModel):
@@ -12,3 +11,4 @@ class UserEmployment(BaseModel):
     end_date = db.Column(db.Date(), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey("users.id"))
     user = db.relationship("User", lazy=False)
+    is_current = db.Column(db.Boolean, default=False, nullable=True)

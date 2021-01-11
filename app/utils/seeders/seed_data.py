@@ -156,4 +156,28 @@ permission_data = [
         "role_id": "1",
         "keyword": "update_skills_categories",
     },
+    {
+        "id": "32",
+        "name": "view_user_employment_history",
+        "role_id": "1",
+        "keyword": "view_user_employment_history",
+    },
+    {
+        "id": "33",
+        "name": "delete_user_employment_history",
+        "role_id": "1",
+        "keyword": "delete_user_employment_history",
+    },
+    {
+        "id": "34",
+        "name": "create_user_employment_history",
+        "role_id": "1",
+        "keyword": "create_user_employment_history",
+    },
+    {
+        "id": "35",
+        "name": "update_user_employment_history",
+        "role_id": "1",
+        "keyword": "update_user_employment_history",
+    },
 ]

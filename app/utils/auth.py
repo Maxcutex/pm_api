@@ -231,14 +231,11 @@ class Auth:
                 user_id = Auth.user("id")
 
                 user_roles = user_role_repo.get_unpaginated(user_id=user_id)
-                print(user_id)
-                print(user_roles)
                 if not user_id:
                     return (
                         make_response(jsonify({"msg": "Missing User ID in token"})),
                         401,
                     )
-
                 if not user_roles:
                     return (
                         make_response(
@@ -251,7 +248,6 @@ class Auth:
                     user_perms += permission_repo.get_unpaginated(
                         **{"role_id": user_role.role_id}
                     )
-                print(user_perms)
                 perms = [perm.keyword for perm in user_perms]
 
                 if len(perms) == 0:
@@ -270,7 +266,6 @@ class Auth:
                         ),
                         401,
                     )
-                print("done")
                 return f(*args, **kwargs)
 
             return decorated

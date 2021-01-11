@@ -145,19 +145,16 @@ class UserController(BaseController):
             location_id,
             password,
         ) = user_info
-        print("initial")
         role = self.role_repo.find_first(id=role_id)
         if not role:
             return self.handle_response(
                 f"Role with userTypeId(roleId) {role_id} does not exist",
                 status_code=400,
             )
-        print("after role")
         if self.user_repo.exists(email=email) and email is not None:
             return self.handle_response(
                 f"User with email '{email}' already exists", status_code=400
             )
-        print("here hre")
         try:
             user = self.user_repo.new_user(*user_info).serialize()
             user_role = self.user_role_repo.new_user_role(
@@ -172,7 +169,6 @@ class UserController(BaseController):
 
             return self.handle_response("OK", payload={"user": user}, status_code=201)
         except Exception as e:
-            print(str(e))
             return self.handle_response(
                 "User could not be created" + str(e), status_code=404
             )
@@ -269,15 +265,8 @@ class UserController(BaseController):
                     f"Role with id {role_id} doesnot exist", status_code=400
                 )
             # refactor this to get value of role to be updated
-            print("befor")
-            all_u = self.user_role_repo.get_unpaginated()
-            print(all_u)
-            print(all_u[0].__dict__)
-            print(all_u[1].__dict__)
+
             user_role = self.user_role_repo.find_first(user_id=user_id)
-            print(user_id)
-            print(user_role)
-            print("after")
             self.user_role_repo.update(user_role, user_id=user_id, role_id=role_id)
 
         user = self.user_repo.update(user, **user_info)

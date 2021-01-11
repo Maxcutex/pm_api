@@ -50,7 +50,6 @@ def truncate_db():
             query = "TRUNCATE table {} CASCADE".format(
                 model_mapper.get(table).get("model").__tablename__
             )
-            print(query)
             db.engine.execute(text(query))
 
         except OperationalError:
