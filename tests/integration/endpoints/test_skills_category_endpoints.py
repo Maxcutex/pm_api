@@ -18,7 +18,6 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
     def test_create_skill_category_endpoint(self):
         role1 = RoleFactory.create(name="admin")
         user_id = BaseTestCase.user_id()
-        print("user id=>", user_id)
         PermissionFactory.create(keyword="create_skills_categories", role=role1)
         UserRoleFactory.create(user_id=user_id, role=role1)
 
@@ -29,9 +28,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
             data=self.encode_to_json_string(data),
             headers=self.headers(),
         )
-        print(response)
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         payload = response_json["payload"]
 
         self.assertEqual(response.status_code, 201)
@@ -52,7 +49,6 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
             self.make_url("/skills_categories/"), headers=self.headers()
         )
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         payload = response_json["payload"]
 
         self.assert200(response)
@@ -71,7 +67,6 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
             headers=self.headers(),
         )
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         payload = response_json["payload"]
 
         self.assert200(response)
@@ -116,7 +111,6 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
             data=self.encode_to_json_string(data),
             headers=self.headers(),
         )
-        print(response)
         self.assert400(response)
 
     def test_delete_skill_category_endpoint_with_right_permission(self):

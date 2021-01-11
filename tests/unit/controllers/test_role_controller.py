@@ -405,7 +405,6 @@ class TestRoleController(BaseTestCase):
 
             # Act
             result = role_controller.create_user_role()
-            print(result)
 
             # Assert
             assert result.status_code == 201

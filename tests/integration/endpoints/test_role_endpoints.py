@@ -13,7 +13,6 @@ class TestRoleEndpoints(BaseTestCase):
     def test_create_role_endpoint(self):
         role1 = RoleFactory.create(name="admin")
         user_id = BaseTestCase.user_id()
-        print("user id=>", user_id)
         PermissionFactory.create(keyword="create_roles", role=role1)
         UserRoleFactory.create(user_id=user_id, role=role1)
 
@@ -26,7 +25,6 @@ class TestRoleEndpoints(BaseTestCase):
         )
 
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         payload = response_json["payload"]
 
         self.assertEqual(response.status_code, 201)
@@ -45,7 +43,6 @@ class TestRoleEndpoints(BaseTestCase):
 
         response = self.client().get(self.make_url("/roles/"), headers=self.headers())
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         payload = response_json["payload"]
 
         self.assert200(response)

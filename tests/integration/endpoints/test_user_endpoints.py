@@ -84,7 +84,6 @@ class TestUserEndpoints(BaseTestCase):
             self.make_url(f"/users/{user.id}/"), headers=self.headers()
         )
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         payload = response_json["payload"]
 
         self.assert200(response)
@@ -158,7 +157,6 @@ class TestUserEndpoints(BaseTestCase):
             location_id=location.id,
             password=user.password,
         )
-        print(user_data)
 
         headers = self.headers()
         headers.update({"X-Location": location.id})
@@ -170,7 +168,6 @@ class TestUserEndpoints(BaseTestCase):
         )
 
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response_json["msg"], "OK")
@@ -187,13 +184,11 @@ class TestUserEndpoints(BaseTestCase):
         create_user_role("view_users", "admin")
         user = UserFactory()
         user.save()
-        print("user id", user.id)
         response = self.client().get(
             self.make_url(f"/users/{user.id}/"), headers=headers
         )
 
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_json["msg"], "OK")
         self.assertEqual(
@@ -248,31 +243,6 @@ class TestUserEndpoints(BaseTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json["msg"], "Role with id 100 doesnot exist")
 
-    #
-    # def test_update_user_endpoint_for_another_user_with_same_user_id_fails(self):
-    #
-    #     create_user_role("update_user")
-    #     UserFactory.create(user_id="user_id_1")
-    #     user = UserFactory.create(user_id="user_id_2")
-    #     user.save()
-    #
-    #     user_data = dict(first_name="Andela", last_name="Eats", userId="user_id_1")
-    #
-    #     response = self.client().put(
-    #         self.make_url("/users/" + str(user.id)),
-    #         headers=self.headers(),
-    #         data=self.encode_to_json_string(user_data),
-    #     )
-    #
-    #     response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-    #
-    #     self.assertEqual(response.status_code, 403)
-    #     self.assertEqual(response_json["msg"], "FAIL")
-    #     self.assertEqual(
-    #         response_json["payload"]["user"],
-    #         "Cannot update to the user id of another existing user",
-    #     )
-
     def test_update_user_endpoint_for_non_existing_user_id_fails(self):
 
         create_user_role("update_user", "admin")
@@ -307,7 +277,6 @@ class TestUserEndpoints(BaseTestCase):
         )
 
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json["msg"], "FAIL")
@@ -339,7 +308,6 @@ class TestUserEndpoints(BaseTestCase):
         )
 
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
-        print(response_json)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response_json["msg"], "OK")
         self.assertEqual(
