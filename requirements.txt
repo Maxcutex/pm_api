@@ -10,8 +10,11 @@ cffi==1.14.4
 cfgv==3.2.0
 chardet==4.0.0
 Click==7.0
+coverage==5.3.1
+coveralls==3.0.0
 cryptography==2.7
 distlib==0.3.1
+docopt==0.6.2
 factory-boy==2.11.1
 Faker==0.9.2
 filelock==3.0.12
@@ -28,7 +31,7 @@ identify==1.5.10
 idna==2.10
 inflect==1.0.1
 itsdangerous==1.1.0
-Jinja2==2.10
+Jinja2==2.10.1
 jsonschema==3.2.0
 Mako==1.0.7
 MarkupSafe==1.1.0
@@ -62,4 +65,4 @@ tzlocal==2.1
 urllib3==1.26.2
 virtualenv==20.2.2
 WebOb==1.8.6
-Werkzeug==0.14.1
+Werkzeug==0.15.3
