@@ -1,4 +1,7 @@
 # Profile Manager API
+[![CircleCI](https://circleci.com/gh/Maxcutex/pm_api.svg?style=svg)](https://circleci.com/gh/Maxcutex/pm_api)
+[![Coverage Status](https://coveralls.io/repos/github/Maxcutex/pm_api/badge.svg?branch=development)](https://coveralls.io/github/Maxcutex/pm_api?branch=development)
+
 PM Api is a python solution cloned from Vessel Api. It handles the api backend solution for Profile Manager
 
 

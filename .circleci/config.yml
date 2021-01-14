@@ -6,8 +6,6 @@ jobs:
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.5
         environment:
-          ANDELA_API_TOKEN: "89S07r4pQ1yTQIQTxfyvHhwPyfDpFg"
-          API_AUTH_URL: http://api-staging.andela.com/api/v1
           FLASK_APP: run
           FLASK_ENV: development
           APP_ENV: testing
@@ -23,7 +21,7 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
 
-    working_directory: ~/andelaeatapi
+    working_directory: ~/pm_api
 
     steps:
       - checkout
@@ -92,12 +90,12 @@ jobs:
       - run:
           name: Deploy Develop to Heroku
           command: |
-            git config --global user.email "eno.bassey@andela.com"
+            git config --global user.email "eno.bassey@webspoons.com"
             git config --global user.name "Eno Bassey"
             git push -f https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git develop:master
   deploy_gcp: # Deploy application to GCP staging
     docker:
-      - image: circleci/node:10.15.0
+      - image: cimg/node:15.5.1
     steps:
       - checkout
       - setup_remote_docker
