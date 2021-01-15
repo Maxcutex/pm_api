@@ -2,8 +2,9 @@ import factory
 from faker import Faker
 from faker.providers import internet, company, job, date_time
 
-from app.models import UserEmployment
+from app.models import UserEmployment, UserEmploymentSkill
 from app.utils import db
+from factories.skill_category_factory import SkillFactory
 from factories.user_factory import UserFactory
 
 fake = Faker()
@@ -37,3 +38,24 @@ class UserEmploymentFactoryFake(factory.Factory):
     start_date = fake.date_between()
     end_date = fake.date_between()
     is_current = False
+
+
+class UserEmploymentSkillFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = UserEmploymentSkill
+        sqlalchemy_session = db.session
+
+    user_employment = factory.SubFactory(UserEmploymentFactory)
+    user_employment_id = factory.SelfAttribute("user_employment.id")
+    skill = factory.SubFactory(SkillFactory)
+    skill_id = factory.SelfAttribute("skill.id")
+
+
+class UserEmploymentSkillFactoryFake(factory.Factory):
+    class Meta:
+        model = UserEmploymentSkill
+
+    user_employment = factory.SubFactory(UserEmploymentFactory)
+    user_employment_id = factory.SelfAttribute("user_employment.id")
+    skill = factory.SubFactory(SkillFactory)
+    skill_id = factory.SelfAttribute("skill.id")

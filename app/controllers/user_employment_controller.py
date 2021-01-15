@@ -1,8 +1,12 @@
 import datetime
 
 from app.controllers.base_controller import BaseController
-from app.repositories import UserRepo
-from app.repositories.user_employment_repo import UserEmploymentRepo
+from app.repositories import (
+    UserRepo,
+    SkillRepo,
+    UserEmploymentRepo,
+    UserEmploymentSkillRepo,
+)
 
 
 class UserEmploymentController(BaseController):
@@ -10,14 +14,31 @@ class UserEmploymentController(BaseController):
         BaseController.__init__(self, request)
         self.user_repo = UserRepo()
         self.user_employment_repo = UserEmploymentRepo()
+        self.user_employment_skill_repo = UserEmploymentSkillRepo()
+        self.skill_repo = SkillRepo()
+
+    def _get_employment_skills(self, employment_id):
+        skills_list = []
+        skills = self.user_employment_skill_repo.get_unpaginated(
+            user_employment_id=employment_id
+        )
+        for skill in skills:
+            skill_data = self.skill_repo.find_first(id=skill)
+            skill_dict = skill_data.serialize()
+            skill_dict["name"] = skill_data.name
+            skills_list.append(skill_dict)
+        return skills_list
 
     def list_user_employment_history(self, user_id):
         user_employments = self.user_employment_repo.get_unpaginated(user_id=user_id)
 
-        user_employment_list = [
-            user_employment.serialize() for user_employment in user_employments
-        ]
-
+        user_employment_list = []
+        for user_employment in user_employments:
+            user_employment_dict = user_employment.serialize()
+            user_employment_dict["skills"] = self._get_employment_skills(
+                user_employment.id
+            )
+            user_employment_list.append(user_employment_dict)
         return self.handle_response(
             "OK",
             payload={
@@ -27,9 +48,14 @@ class UserEmploymentController(BaseController):
 
     def get_user_employment(self, user_employment_id):
         user_employment = self.user_employment_repo.get(user_employment_id)
+
         if user_employment:
+            user_employment_dict = user_employment.serialize()
+            user_employment_dict["skills"] = self._get_employment_skills(
+                user_employment.id
+            )
             return self.handle_response(
-                "OK", payload={"user_employment": user_employment.serialize()}
+                "OK", payload={"user_employment": user_employment_dict}
             )
         return self.handle_response(
             "Invalid User Employment or Missing user_employment_id", status_code=400
@@ -43,6 +69,7 @@ class UserEmploymentController(BaseController):
             start_date,
             end_date,
             is_current,
+            skills,
         ) = self.request_params(
             "user_id",
             "institution_name",
@@ -50,6 +77,7 @@ class UserEmploymentController(BaseController):
             "start_date",
             "end_date",
             "is_current",
+            "skills",
         )
         try:
 
@@ -69,13 +97,34 @@ class UserEmploymentController(BaseController):
                 end_date=end_date,
                 is_current=is_current,
             )
+            skills_dict = self._process_skills(user_employment.id, skills)
+
+            user_employment_serialized = user_employment.serialize()
+            user_employment_serialized["skills"] = skills_dict
             return self.handle_response(
                 "OK",
-                payload={"user_employment": user_employment.serialize()},
+                payload={"user_employment": user_employment_serialized},
                 status_code=201,
             )
         except Exception as e:
             return self.handle_response("Error processing: " + str(e), status_code=400)
+
+    def _process_skills(self, user_employment_id, skills):
+        skills_dict = []
+
+        if skills is not None:
+
+            for skill in skills:
+                user_employment_skills = (
+                    self.user_employment_skill_repo.new_user_employment_skill(
+                        user_employment_id=user_employment_id, skill_id=skill
+                    )
+                )
+                skill_data = self.skill_repo.find_first(id=skill)
+                user_employment_skill_dict = user_employment_skills.serialize()
+                user_employment_skill_dict["name"] = skill_data.name
+                skills_dict.append(user_employment_skill_dict)
+        return skills_dict
 
     def update_user_employment(self, update_id):
         (
@@ -86,6 +135,7 @@ class UserEmploymentController(BaseController):
             start_date,
             end_date,
             is_current,
+            skills,
         ) = self.request_params(
             "user_id",
             "user_employment_id",
@@ -94,6 +144,7 @@ class UserEmploymentController(BaseController):
             "start_date",
             "end_date",
             "is_current",
+            "skills",
         )
         if update_id != user_employment_id:
             return self.handle_response(
@@ -116,9 +167,14 @@ class UserEmploymentController(BaseController):
             }
 
             self.user_employment_repo.update(user_employment, **updates)
+            skills_dict = self._process_skills(user_employment.id, skills)
+            user_employment_serialized = user_employment.serialize()
+            user_employment_serialized["skills"] = skills_dict
             return self.handle_response(
-                "OK", payload={"user_employment": user_employment.serialize()}
+                "OK",
+                payload={"user_employment": user_employment_serialized},
             )
+
         return self.handle_response(
             "Invalid or incorrect user_employment_id provided", status_code=400
         )

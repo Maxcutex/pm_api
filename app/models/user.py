@@ -18,6 +18,6 @@ class User(BaseModel):
     image_url = db.Column(db.String, nullable=True)
     gender = db.Column(db.Enum(Gender), nullable=True)
     date_of_birth = db.Column(db.Date(), nullable=False)
-    user_role = db.relationship("UserRole", lazy=True)
+    user_role = db.relationship("UserRole", backref="user_roles", lazy=True)
     is_active = db.Column(db.Boolean, default=True, nullable=True)
     is_deleted = db.Column(db.Boolean, default=True, nullable=True)
