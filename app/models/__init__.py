@@ -7,10 +7,10 @@ from .role import Role
 from .user_role import UserRole
 from .user import User
 from .skill import Skill
-from .skills_category import SkillsCategory
+from .skill_category import SkillCategory
 from .user_education import UserEducation
 from .user_employment import UserEmployment
-from .user_employment_skills import UserEmploymentSkill
+from .user_employment_skill import UserEmploymentSkill
 from .user_project import UserProject
 from .user_skills import UserSkills
 from .location import Location
@@ -21,7 +21,7 @@ __all__ = (
     "UserRole",
     "Activity",
     "User",
-    "SkillsCategory",
+    "SkillCategory",
     "Skill",
     "UserSkills",
     "UserProject",
@@ -44,7 +44,7 @@ tables_logged_after_every_insert = [
     UserRole,
     User,
     Skill,
-    SkillsCategory,
+    SkillCategory,
     Location,
 ]
 tables_logged_after_every_update = [
@@ -58,7 +58,7 @@ tables_logged_after_every_update = [
     UserRole,
     User,
     Skill,
-    SkillsCategory,
+    SkillCategory,
     Location,
 ]
 tables_logged_after_every_delete = [
@@ -72,7 +72,7 @@ tables_logged_after_every_delete = [
     UserRole,
     User,
     Skill,
-    SkillsCategory,
+    SkillCategory,
     Location,
 ]
 generate_id_tables = (User,)

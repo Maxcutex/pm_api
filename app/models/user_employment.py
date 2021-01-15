@@ -12,3 +12,6 @@ class UserEmployment(BaseModel):
     user_id = db.Column(db.Integer(), db.ForeignKey("users.id"))
     user = db.relationship("User", lazy=False)
     is_current = db.Column(db.Boolean, default=False, nullable=True)
+    skills = db.relationship(
+        "UserEmploymentSkill", backref="user_employment_skills", lazy=True
+    )

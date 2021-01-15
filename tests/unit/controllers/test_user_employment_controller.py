@@ -5,14 +5,27 @@ from datetime import datetime, date
 from unittest.mock import patch
 
 from app.controllers.user_employment_controller import UserEmploymentController
-from app.models import User, UserEmployment
+from app.models import User, UserEmployment, UserEmploymentSkill
 from app.repositories.user_employment_repo import UserEmploymentRepo
+from factories.skill_category_factory import (
+    CategoryWithSkillsFactory,
+    SkillFactory,
+    SkillFactoryFake,
+)
 from tests.base_test_case import BaseTestCase
 
 
 class TestUserEmploymentController(BaseTestCase):
     def setUp(self):
         self.BaseSetUp()
+        self.skill_category = CategoryWithSkillsFactory.create(skills=4)
+        self.skill_category.save()
+        print(self.skill_category)
+        print(self.skill_category.__dict__)
+        self.skill_one = self.skill_category.skills[0]
+        self.skill_two = self.skill_category.skills[1]
+        self.skill_three = self.skill_category.skills[2]
+        self.skill_four = self.skill_category.skills[3]
         self.mock_user = User(
             id=1,
             first_name="test",
@@ -35,6 +48,9 @@ class TestUserEmploymentController(BaseTestCase):
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
+        self.mock_user_employment_skill = UserEmploymentSkill(
+            user_employment_id=self.mock_user_employment.id, skill_id=self.skill_one.id
+        )
 
     def tearDown(self):
         self.BaseTearDown()
@@ -47,7 +63,6 @@ class TestUserEmploymentController(BaseTestCase):
         """Test list_user_employments OK response."""
         # Arrange
         with self.app.app_context():
-
             mock_user_employment_repo_get_unpaginated.return_value.items = [
                 self.mock_user_employment,
             ]
@@ -94,6 +109,10 @@ class TestUserEmploymentController(BaseTestCase):
             # Assert
             assert result.status_code == 200
             assert result.get_json()["msg"] == "OK"
+            # import pdb
+            # pdb.set_trace()
+            # assert result.get_json()["payload"]["user_employment"]["skills"][0] == "OK"
+            # assert result.get_json()["msg"] == "OK"
 
     @patch.object(UserEmploymentController, "request_params")
     def test_create_user_employment_start_date_less_than_end_date_response(
@@ -114,6 +133,7 @@ class TestUserEmploymentController(BaseTestCase):
                 date(year=2028, month=1, day=31),
                 date(year=2020, month=1, day=31),
                 False,
+                [self.skill_one.id, self.skill_two.id],
             )
             user_employment_controller = UserEmploymentController(self.request_context)
 
@@ -144,6 +164,7 @@ class TestUserEmploymentController(BaseTestCase):
                 date(year=2018, month=1, day=31),
                 date(year=2020, month=1, day=31),
                 False,
+                [self.skill_one.id, self.skill_two.id],
             )
             mock_user_employment_repo_find_first.return_value = None
             user_employment_controller = UserEmploymentController(self.request_context)
@@ -154,6 +175,10 @@ class TestUserEmploymentController(BaseTestCase):
             # Assert
             assert result.status_code == 201
             assert result.get_json()["msg"] == "OK"
+            assert (
+                result.get_json()["payload"]["user_employment"]["skills"][0]["name"]
+                == self.skill_one.name
+            )
 
     @patch.object(UserEmploymentController, "request_params")
     @patch.object(UserEmploymentRepo, "get")
@@ -167,6 +192,7 @@ class TestUserEmploymentController(BaseTestCase):
         with self.app.app_context():
             mock_user_employment_repo_get.return_value = None
             mock_user_employment_controller_request_params.return_value = (
+                None,
                 None,
                 None,
                 None,
@@ -209,6 +235,7 @@ class TestUserEmploymentController(BaseTestCase):
                 date(year=2018, month=1, day=31),
                 date(year=2020, month=1, day=31),
                 True,
+                [self.skill_one.id, self.skill_two.id],
             )
             user_employment_controller = UserEmploymentController(self.request_context)
 
@@ -218,6 +245,10 @@ class TestUserEmploymentController(BaseTestCase):
             # Assert
             assert result.status_code == 200
             assert result.get_json()["msg"] == "OK"
+            assert (
+                result.get_json()["payload"]["user_employment"]["skills"][0]["name"]
+                == self.skill_one.name
+            )
 
     @patch.object(UserEmploymentRepo, "get")
     def test_delete_user_employment_when_user_employment_is_invalid(
@@ -257,3 +288,37 @@ class TestUserEmploymentController(BaseTestCase):
             # Assert
             assert result.status_code == 200
             assert result.get_json()["msg"] == "user employment deleted"
+
+    @patch.object(UserEmploymentController, "request_params")
+    @patch.object(UserEmploymentRepo, "find_first")
+    def test_user_employment_create_with_skills_valid(
+        self,
+        mock_user_employment_repo_find_first,
+        mock_user_employment_controller_request_params,
+    ):
+        """
+        Test create_user_employment with skills OK response.
+        """
+        # Arrange
+        with self.app.app_context():
+            mock_user_employment_controller_request_params.return_value = (
+                1,
+                "Institution name",
+                "Job title",
+                date(year=2018, month=1, day=31),
+                date(year=2020, month=1, day=31),
+                False,
+                [self.skill_one.id, self.skill_two.id],
+            )
+            mock_user_employment_repo_find_first.return_value = None
+            user_employment_controller = UserEmploymentController(self.request_context)
+
+            # Act
+            result = user_employment_controller.create_user_employment()
+
+            # Assert
+            assert result.status_code == 201
+            assert result.get_json()["msg"] == "OK"
+
+    def test_user_employment_create_with_skills_invalid_skills(self):
+        pass

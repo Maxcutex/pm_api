@@ -39,6 +39,7 @@ def get_user_employment(user_employment_id):
         "start_date|required:date",
         "end_date|required:date",
         "is_current|required",
+        "skills|optional:list_int",
     ]
 )
 @Auth.has_permission(["create_user_employment_history"])

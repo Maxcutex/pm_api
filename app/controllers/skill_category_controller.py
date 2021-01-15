@@ -1,16 +1,16 @@
 from app.controllers.base_controller import BaseController
-from app.repositories.skills_category_repo import SkillsCategoryRepo
+from app.repositories.skill_category_repo import SkillCategoryRepo
 from app.utils.redisset import RedisSet
 
 
-class SkillsCategoryController(BaseController):
+class SkillCategoryController(BaseController):
     def __init__(self, request):
         BaseController.__init__(self, request)
-        self.skills_category_repo = SkillsCategoryRepo()
+        self.skill_category_repo = SkillCategoryRepo()
         self.redis_set = RedisSet()
 
     def list_skills_categories(self):
-        skills_categories = self.skills_category_repo.filter_by(is_deleted=False)
+        skills_categories = self.skill_category_repo.filter_by(is_deleted=False)
 
         skills_category_list = [
             skills_category.serialize() for skills_category in skills_categories.items
@@ -24,7 +24,7 @@ class SkillsCategoryController(BaseController):
         )
 
     def get_skills_category(self, skills_category_id):
-        skills_category = self.skills_category_repo.get(skills_category_id)
+        skills_category = self.skill_category_repo.get(skills_category_id)
         if skills_category:
             return self.handle_response(
                 "OK", payload={"skills_category": skills_category.serialize()}
@@ -35,11 +35,11 @@ class SkillsCategoryController(BaseController):
 
     def create_skills_category(self):
         name, help_ = self.request_params("name", "help")
-        skills_category1 = self.skills_category_repo.find_first(name=name)
+        skills_category1 = self.skill_category_repo.find_first(name=name)
 
         if not skills_category1:
             try:
-                skills_category = self.skills_category_repo.new_skills_category(
+                skills_category = self.skill_category_repo.new_skill_category(
                     name=name, help_=help_
                 )
                 return self.handle_response(
@@ -58,11 +58,11 @@ class SkillsCategoryController(BaseController):
 
     def update_skills_category(self, skills_category_id):
         name, help_ = self.request_params("name", "help")
-        skills_category = self.skills_category_repo.get(skills_category_id)
+        skills_category = self.skill_category_repo.get(skills_category_id)
         if skills_category:
             updates = {}
             if name:
-                skills_category1 = self.skills_category_repo.find_first(name=name)
+                skills_category1 = self.skill_category_repo.find_first(name=name)
                 if skills_category1:
                     return self.handle_response(
                         "Skills Category with this name already exists", status_code=400
@@ -71,7 +71,7 @@ class SkillsCategoryController(BaseController):
             if help_:
                 updates["help"] = help_
 
-            self.skills_category_repo.update(skills_category, **updates)
+            self.skill_category_repo.update(skills_category, **updates)
             return self.handle_response(
                 "OK", payload={"skills_category": skills_category.serialize()}
             )
@@ -80,11 +80,11 @@ class SkillsCategoryController(BaseController):
         )
 
     def delete_skills_category(self, skills_category_id):
-        skills_category = self.skills_category_repo.get(skills_category_id)
+        skills_category = self.skill_category_repo.get(skills_category_id)
         if skills_category:
             updates = {}
             updates["is_deleted"] = True
-            self.skills_category_repo.update(skills_category, **updates)
+            self.skill_category_repo.update(skills_category, **updates)
             return self.handle_response(
                 "skills category deleted", payload={"status": "success"}
             )
