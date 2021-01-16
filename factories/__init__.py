@@ -10,3 +10,4 @@ from .skill_category_factory import (
     SkillFactoryFake,
 )
 from .user_employment_factory import UserEmploymentFactory, UserEmploymentFactoryFake
+from .user_project_factory import UserProjectFactory, UserProjectFactoryFake

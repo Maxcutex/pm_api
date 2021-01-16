@@ -20,8 +20,6 @@ class TestUserEmploymentController(BaseTestCase):
         self.BaseSetUp()
         self.skill_category = CategoryWithSkillsFactory.create(skills=4)
         self.skill_category.save()
-        print(self.skill_category)
-        print(self.skill_category.__dict__)
         self.skill_one = self.skill_category.skills[0]
         self.skill_two = self.skill_category.skills[1]
         self.skill_three = self.skill_category.skills[2]

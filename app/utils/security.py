@@ -268,6 +268,9 @@ class Security:
                                 column_name = rule_array[3]
 
                                 rep = "app.repositories.{}_repo".format(repo_name)
+                                import pdb
+
+                                pdb.set_trace()
                                 mod = importlib.import_module(rep)
                                 repo_class = getattr(
                                     mod, "{}Repo".format(to_pascal_case(repo_name))
@@ -534,6 +537,11 @@ class Security:
                                 column_name = rule_array[3]
 
                                 rep = "app.repositories.{}_repo".format(repo_name)
+                                print("rep =>", rep)
+                                import pdb
+
+                                pdb.set_trace()
+
                                 mod = importlib.import_module(rep)
                                 repo_class = getattr(
                                     mod, "{}Repo".format(to_pascal_case(repo_name))

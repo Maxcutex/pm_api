@@ -89,6 +89,10 @@ class UserEmploymentController(BaseController):
                 return self.handle_response(
                     "Start Date cannot be greater than End date ", status_code=400
                 )
+
+            if skills is not None:
+                self._validate_skills(skills)
+
             user_employment = self.user_employment_repo.new_user_employment(
                 user_id=user_id,
                 institution_name=institution_name,
@@ -108,6 +112,15 @@ class UserEmploymentController(BaseController):
             )
         except Exception as e:
             return self.handle_response("Error processing: " + str(e), status_code=400)
+
+    def _validate_skills(self, skills):
+        for skill in skills:
+            skill_data = self.skill_repo.find_first(id=skill)
+            if skill_data is None:
+                return self.handle_response(
+                    "One of the skills is invalid", status_code=400
+                )
+        return
 
     def _process_skills(self, user_employment_id, skills):
         skills_dict = []
@@ -150,6 +163,8 @@ class UserEmploymentController(BaseController):
             return self.handle_response(
                 "Invalid or incorrect user_employment_id provided", status_code=400
             )
+        if skills is not None:
+            self._validate_skills(skills)
 
         user_employment = self.user_employment_repo.get(user_employment_id)
 

@@ -42,6 +42,7 @@ class TestUserEmploymentEndpoints(BaseTestCase):
             headers=self.headers(),
         )
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
+        print(response_json)
         payload = response_json["payload"]
 
         self.assertEqual(response.status_code, 201)
