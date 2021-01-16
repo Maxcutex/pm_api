@@ -1,5 +1,4 @@
 from .base_model import BaseModel, db
-from app.utils.enums import Gender
 
 
 class UserEmploymentSkill(BaseModel):

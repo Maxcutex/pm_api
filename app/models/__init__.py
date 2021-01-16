@@ -12,6 +12,7 @@ from .user_education import UserEducation
 from .user_employment import UserEmployment
 from .user_employment_skill import UserEmploymentSkill
 from .user_project import UserProject
+from .user_project_skill import UserProjectSkill
 from .user_skills import UserSkills
 from .location import Location
 
@@ -25,6 +26,7 @@ __all__ = (
     "Skill",
     "UserSkills",
     "UserProject",
+    "UserProjectSkill",
     "UserEmploymentSkill",
     "UserEmployment",
     "UserEducation",
@@ -38,6 +40,7 @@ tables_logged_after_every_insert = [
     UserEmployment,
     UserEmploymentSkill,
     UserProject,
+    UserProjectSkill,
     UserSkills,
     Role,
     Permission,
@@ -52,6 +55,7 @@ tables_logged_after_every_update = [
     UserEmployment,
     UserEmploymentSkill,
     UserProject,
+    UserProjectSkill,
     UserSkills,
     Role,
     Permission,
@@ -66,6 +70,7 @@ tables_logged_after_every_delete = [
     UserEmployment,
     UserEmploymentSkill,
     UserProject,
+    UserProjectSkill,
     UserSkills,
     Role,
     Permission,
