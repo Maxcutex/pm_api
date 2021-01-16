@@ -62,6 +62,12 @@ class Gender(BaseEnum):
     female = "female"
 
 
+class EmploymentType(BaseEnum):
+    full = "full"
+    part = "part"
+    contract = "contract"
+
+
 class WeekDays(BaseEnum):
     monday = "monday"
     tuesday = "tuesday"
