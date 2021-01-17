@@ -31,6 +31,13 @@ class TestUserEmploymentEndpoints(BaseTestCase):
             "user_id": user_id,
             "institution_name": user_emp_data.institution_name,
             "job_title": user_emp_data.job_title,
+            "employment_type": user_emp_data.employment_type,
+            "institution_url": user_emp_data.institution_url,
+            "institution_city": user_emp_data.institution_city,
+            "institution_country": user_emp_data.institution_country,
+            "institution_size": user_emp_data.institution_size,
+            "work_summary": user_emp_data.work_summary,
+            "accomplishments": user_emp_data.accomplishments,
             "start_date": str(user_emp_data.start_date),
             "end_date": str(user_emp_data.end_date),
             "is_current": user_emp_data.is_current,
@@ -42,6 +49,7 @@ class TestUserEmploymentEndpoints(BaseTestCase):
             headers=self.headers(),
         )
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
+        print(response_json)
         payload = response_json["payload"]
 
         self.assertEqual(response.status_code, 201)
@@ -125,6 +133,13 @@ class TestUserEmploymentEndpoints(BaseTestCase):
             "user_employment_id": user_emp_data.id,
             "institution_name": user_emp_data.institution_name,
             "job_title": user_emp_data.job_title,
+            "employment_type": user_emp_data.employment_type,
+            "institution_url": user_emp_data.institution_url,
+            "institution_city": user_emp_data.institution_city,
+            "institution_country": user_emp_data.institution_country,
+            "institution_size": user_emp_data.institution_size,
+            "work_summary": user_emp_data.work_summary,
+            "accomplishments": user_emp_data.accomplishments,
             "start_date": str(user_emp_data.start_date),
             "end_date": str(user_emp_data.end_date),
             "is_current": user_emp_data.is_current,
@@ -157,6 +172,13 @@ class TestUserEmploymentEndpoints(BaseTestCase):
             "user_employment_id": user_emp_data.id,
             "institution_name": user_emp_data.institution_name,
             "job_title": user_emp_data.job_title,
+            "employment_type": user_emp_data.employment_type,
+            "institution_url": user_emp_data.institution_url,
+            "institution_city": user_emp_data.institution_city,
+            "institution_country": user_emp_data.institution_country,
+            "institution_size": user_emp_data.institution_size,
+            "work_summary": user_emp_data.work_summary,
+            "accomplishments": user_emp_data.accomplishments,
             "start_date": str(user_emp_data.start_date),
             "end_date": str(user_emp_data.end_date),
             "is_current": user_emp_data.is_current,

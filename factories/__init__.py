@@ -3,5 +3,11 @@ from .role_factory import RoleFactory
 from .user_role_factory import UserRoleFactory
 from .user_factory import UserFactory
 from .location_factory import LocationFactory
-from .skill_category_factory import SkillsCategoryFactory, SkillsCategoryFactoryFake
+from .skill_category_factory import (
+    SkillCategoryFactory,
+    SkillCategoryFactoryFake,
+    SkillFactory,
+    SkillFactoryFake,
+)
 from .user_employment_factory import UserEmploymentFactory, UserEmploymentFactoryFake
+from .user_project_factory import UserProjectFactory, UserProjectFactoryFake

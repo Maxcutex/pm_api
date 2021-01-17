@@ -241,6 +241,12 @@ class UserController(BaseController):
 
         return self.handle_response("User not found", status_code=404)
 
+    def update_profile_summary(self):
+        pass
+
+    def update_profile_image(self):
+        pass
+
     def update_user(self, user_id):
         user = self.user_repo.find_first_(id=user_id)
 
@@ -305,8 +311,10 @@ class UserController(BaseController):
                 "iss": "accounts.webspoons.com",
             }
             token = Auth.encode_token(user_data)
-            return self.handle_response("OK", payload={"token": token}, status_code=200)
+            return self.handle_response(
+                "OK", payload={"token": token, "user": user.email}, status_code=200
+            )
 
         return self.handle_response(
-            "Username/password combination is wrong", status_code=404
+            "Username/password combination is wrong", status_code=400
         )

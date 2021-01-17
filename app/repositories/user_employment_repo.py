@@ -7,11 +7,31 @@ class UserEmploymentRepo(BaseRepo):
         BaseRepo.__init__(self, UserEmployment)
 
     def new_user_employment(
-        self, user_id, institution_name, job_title, start_date, end_date, is_current
+        self,
+        user_id,
+        institution_name,
+        job_title,
+        employment_type,
+        institution_url,
+        institution_city,
+        institution_country,
+        institution_size,
+        work_summary,
+        accomplishments,
+        start_date,
+        end_date,
+        is_current,
     ):
         user_employment = UserEmployment(
             institution_name=institution_name,
             job_title=job_title,
+            employment_type=employment_type,
+            institution_url=institution_url,
+            institution_city=institution_city,
+            institution_country=institution_country,
+            institution_size=institution_size,
+            work_summary=work_summary,
+            accomplishments=accomplishments,
             start_date=start_date,
             end_date=end_date,
             user_id=user_id,

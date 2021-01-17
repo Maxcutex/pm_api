@@ -27,6 +27,12 @@ user_data = [
         "date_of_birth": "1970-04-23",
         "is_active": True,
         "is_deleted": False,
+        "profile_summary": "Experienced Solutions Architect with a demonstrated history of working in the "
+        "financial services industry. Skilled in Databases, IT Strategy, Mobile Payments, "
+        "Software Project Management, and Solution Implementation. A strong business development "
+        "professional with a Bachelor of Science (BSc) Computer Science from the University of "
+        "Calabar. He is focused on delivering excellence. He is working with and researching"
+        " blockchain technologies focusing on Ethereum",
     },
     {
         "id": "2",
@@ -41,6 +47,12 @@ user_data = [
         "date_of_birth": "1970-04-23",
         "is_active": True,
         "is_deleted": False,
+        "profile_summary": "Experienced Solutions Architect with a demonstrated history of working in the "
+        "financial services industry. Skilled in Databases, IT Strategy, Mobile Payments, "
+        "Software Project Management, and Solution Implementation. A strong business development "
+        "professional with a Bachelor of Science (BSc) Computer Science from the University of "
+        "Calabar. He is focused on delivering excellence. He is working with and researching"
+        " blockchain technologies focusing on Ethereum",
     },
 ]
 
