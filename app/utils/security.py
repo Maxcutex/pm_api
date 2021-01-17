@@ -10,7 +10,7 @@ from app.utils.enums import (
     FaqCategoryType,
     MealTypes,
     MealPeriods,
-    SkillLevels,
+    SkillLevel,
     Gender,
 )
 
@@ -780,7 +780,7 @@ class Security:
             "FaqCategoryType": [
                 value.value for value in FaqCategoryType.__members__.values()
             ],
-            "SkillLevels": [value.value for value in SkillLevels.__members__.values()],
+            "SkillLevel": [value.value for value in SkillLevel.__members__.values()],
             "Gender": [value.value for value in Gender.__members__.values()],
             "MealTypes": [value.value for value in MealTypes.__members__.values()],
             "MealPeriods": [value.value for value in MealPeriods.__members__.values()],

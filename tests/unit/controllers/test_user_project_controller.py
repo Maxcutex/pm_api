@@ -9,8 +9,6 @@ from app.models import User, UserProject, UserProjectSkill
 from app.repositories.user_project_repo import UserProjectRepo
 from factories.skill_category_factory import (
     CategoryWithSkillsFactory,
-    SkillFactory,
-    SkillFactoryFake,
 )
 from tests.base_test_case import BaseTestCase
 
