@@ -17,7 +17,7 @@ class MealTypes(BaseEnum):
     protein = "protein"
 
 
-class SkillLevels(BaseEnum):
+class SkillLevel(BaseEnum):
     beginner = "beginner"
     intermediate = "intermediate"
     expert = "expert"

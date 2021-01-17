@@ -68,7 +68,7 @@ class RoleController(BaseController):
             if help_:
                 updates["help"] = help_
 
-            self.role_repo.update(role, **updates)
+            role = self.role_repo.update(role, **updates)
             return self.handle_response("OK", payload={"role": role.serialize()})
         return self.handle_response(
             "Invalid or incorrect role_id provided", status_code=400

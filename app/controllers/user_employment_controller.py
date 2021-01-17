@@ -224,7 +224,9 @@ class UserEmploymentController(BaseController):
                 "is_current": is_current,
             }
 
-            self.user_employment_repo.update(user_employment, **updates)
+            user_employment = self.user_employment_repo.update(
+                user_employment, **updates
+            )
             skills_dict = self._process_skills(user_employment.id, skills)
             user_employment_serialized = user_employment.serialize()
             user_employment_serialized["skills"] = skills_dict

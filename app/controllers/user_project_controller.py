@@ -178,7 +178,7 @@ class UserProjectController(BaseController):
                 "is_current": is_current,
             }
 
-            self.user_project_repo.update(user_project, **updates)
+            user_project = self.user_project_repo.update(user_project, **updates)
             skills_dict = self._process_skills(user_project.id, skills)
             user_project_serialized = user_project.serialize()
             user_project_serialized["skills"] = skills_dict

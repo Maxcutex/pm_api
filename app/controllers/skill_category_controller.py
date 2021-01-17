@@ -71,7 +71,9 @@ class SkillCategoryController(BaseController):
             if help_:
                 updates["help"] = help_
 
-            self.skill_category_repo.update(skills_category, **updates)
+            skills_category = self.skill_category_repo.update(
+                skills_category, **updates
+            )
             return self.handle_response(
                 "OK", payload={"skills_category": skills_category.serialize()}
             )

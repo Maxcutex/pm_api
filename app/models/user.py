@@ -16,6 +16,7 @@ class User(BaseModel):
     location_id = db.Column(db.Integer(), db.ForeignKey("locations.id"), default=1)
     location = db.relationship("Location", lazy=False)
     image_url = db.Column(db.String, nullable=True)
+    profile_summary = db.Column(db.Text, nullable=True)
     gender = db.Column(db.Enum(Gender), nullable=True)
     date_of_birth = db.Column(db.Date(), nullable=False)
     user_role = db.relationship("UserRole", backref="user_roles", lazy=True)
