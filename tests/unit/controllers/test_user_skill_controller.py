@@ -157,6 +157,7 @@ class TestUserSkillController(BaseTestCase):
                 None,
                 None,
                 None,
+                None,
             )
             user_skill_controller = UserSkillController(self.request_context)
 
@@ -183,9 +184,10 @@ class TestUserSkillController(BaseTestCase):
         # Arrange
         with self.app.app_context():
             mock_user_skill_repo_get.return_value = self.mock_user_skill
-            mock_user_skill_repo_find_first.return_value = None
+            mock_user_skill_repo_find_first.return_value = self.mock_user_skill
             mock_user_skill_controller_request_params.return_value = (
                 self.user.id,
+                self.mock_user_skill.id,
                 "expert",
                 5,
                 self.skill_one.id,
@@ -193,8 +195,8 @@ class TestUserSkillController(BaseTestCase):
             user_skill_controller = UserSkillController(self.request_context)
 
             # Act
-            result = user_skill_controller.update_user_skill(1)
-
+            result = user_skill_controller.update_user_skill(self.mock_user_skill.id)
+            print(result)
             # Assert
             assert result.status_code == 200
             assert result.get_json()["msg"] == "OK"

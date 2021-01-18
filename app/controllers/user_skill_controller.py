@@ -18,7 +18,6 @@ class UserSkillController(BaseController):
         user_skill_list = []
         for user_skill in user_skills:
             user_skill_dict = user_skill.serialize()
-            user_skill_dict["skills"] = self._get_project_skills(user_skill.id)
             user_skill_list.append(user_skill_dict)
         return self.handle_response(
             "OK",
@@ -45,7 +44,9 @@ class UserSkillController(BaseController):
             "user_id",
         )
         try:
+
             skill_data = self.skill_repo.find_first(id=skill_id)
+
             if skill_data is None:
                 return self.handle_response("Skill Id is invalid", status_code=400)
             user_skill = self.user_skill_repo.new_user_skill(
@@ -61,22 +62,22 @@ class UserSkillController(BaseController):
             return self.handle_response("Error processing: " + str(e), status_code=400)
 
     def update_user_skill(self, update_id):
-        (user_id, skill_level, years, skill_id,) = self.request_params(
+        (user_id, user_skill_id, skill_level, years, skill_id,) = self.request_params(
             "user_id",
+            "user_skill_id",
             "skill_level",
             "years",
             "skill_id",
         )
-        if update_id != user_id:
+        if update_id != user_skill_id:
             return self.handle_response(
                 "Invalid or incorrect user_skill_id provided", status_code=400
             )
-
         skill_data = self.skill_repo.find_first(id=skill_id)
         if skill_data is None:
             return self.handle_response("Skill Id is invalid", status_code=400)
 
-        user_skill = self.user_skill_repo.get(user_id)
+        user_skill = self.user_skill_repo.find_first(id=update_id)
 
         if user_skill:
             updates = {

@@ -257,7 +257,7 @@ class Auth:
                         ),
                         401,
                     )
-                check = all(item in permission for item in perms)
+                check = any(item in permission for item in perms)
 
                 if check is False:
                     return (
