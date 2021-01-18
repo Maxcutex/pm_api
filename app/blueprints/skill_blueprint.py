@@ -19,11 +19,14 @@ def list_skills():
 def get_skill(skill_id):
     pass
 
+
 def create_skill():
     pass
 
+
 def update_skill(skill_id):
     pass
+
 
 def delete_skill(skill_id):
     pass
