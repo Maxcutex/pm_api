@@ -1,7 +1,7 @@
 from tests.base_test_case import BaseTestCase
 from factories import (
-    SkillsCategoryFactory,
-    SkillsCategoryFactoryFake,
+    SkillCategoryFactory,
+    SkillCategoryFactoryFake,
     PermissionFactory,
     UserRoleFactory,
     RoleFactory,
@@ -29,6 +29,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
             headers=self.headers(),
         )
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
+        print(response_json)
         payload = response_json["payload"]
 
         self.assertEqual(response.status_code, 201)
@@ -38,7 +39,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
 
     def test_list_skill_categories_endpoint(self):
 
-        SkillsCategoryFactory.create_batch(3)
+        SkillCategoryFactory.create_batch(3)
         role1 = RoleFactory.create(name="admin")
         user_id = BaseTestCase.user_id()
 
@@ -58,7 +59,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
     def test_get_specific_skill_category_endpoint(self):
         role = RoleFactory.create()
         user_id = BaseTestCase.user_id()
-        skills_category = SkillsCategoryFactory.create()
+        skills_category = SkillCategoryFactory.create()
         PermissionFactory.create(keyword="view_skills_categories", role=role)
         UserRoleFactory.create(user_id=user_id, role=role)
 
@@ -81,7 +82,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
         RoleFactory.create()
         role1 = RoleFactory.create(name="admin")
         user_id = BaseTestCase.user_id()
-        skills_category = SkillsCategoryFactory.create()
+        skills_category = SkillCategoryFactory.create()
 
         PermissionFactory.create(keyword="update_skills_categories", role=role1)
         UserRoleFactory.create(user_id=user_id, role=role1)
@@ -115,7 +116,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
 
     def test_delete_skill_category_endpoint_with_right_permission(self):
         role = RoleFactory.create()
-        skills_category = SkillsCategoryFactory.create()
+        skills_category = SkillCategoryFactory.create()
         user_id = BaseTestCase.user_id()
 
         PermissionFactory.create(keyword="delete_skills_categories", role=role)
@@ -147,7 +148,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
 
     def test_delete_skill_category_endpoint_with_wrong_skill_category_id(self):
         role1 = RoleFactory.create(name="admin")
-        SkillsCategoryFactory.create()
+        SkillCategoryFactory.create()
         user_id = BaseTestCase.user_id()
         PermissionFactory.create(
             keyword="delete_skills_categories",

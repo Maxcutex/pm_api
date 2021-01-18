@@ -17,7 +17,7 @@ class MealTypes(BaseEnum):
     protein = "protein"
 
 
-class SkillLevels(BaseEnum):
+class SkillLevel(BaseEnum):
     beginner = "beginner"
     intermediate = "intermediate"
     expert = "expert"
@@ -60,6 +60,12 @@ class FaqCategoryType(BaseEnum):
 class Gender(BaseEnum):
     male = "male"
     female = "female"
+
+
+class EmploymentType(BaseEnum):
+    full = "full"
+    part = "part"
+    contract = "contract"
 
 
 class WeekDays(BaseEnum):

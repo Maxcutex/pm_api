@@ -5,13 +5,13 @@ from app.blueprints.base_blueprint import (
     Security,
     Auth,
 )
-from app.controllers.skills_category_controller import SkillsCategoryController
+from app.controllers.skill_category_controller import SkillCategoryController
 
 url_prefix = "{}/skills_categories".format(BaseBlueprint.base_url_prefix)
 skills_category_blueprint = Blueprint(
     "skills_category", __name__, url_prefix=url_prefix
 )
-skills_category_controller = SkillsCategoryController(request)
+skills_category_controller = SkillCategoryController(request)
 
 
 @skills_category_blueprint.route("/", methods=["GET"])

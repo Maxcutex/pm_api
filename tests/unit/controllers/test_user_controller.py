@@ -44,6 +44,7 @@ class TestUserController(BaseTestCase):
             last_name="test",
             gender="male",
             password="test",
+            email="user1@user.com",
             is_active=True,
             is_deleted=False,
             created_at=datetime.now(),
@@ -55,6 +56,7 @@ class TestUserController(BaseTestCase):
             last_name="test",
             gender="male",
             password="test",
+            email="user2@user.com",
             is_active=True,
             is_deleted=False,
             created_at=datetime.now(),
@@ -212,3 +214,50 @@ class TestUserController(BaseTestCase):
             response = user_controller.list_user(id=1)
 
             self.assertEqual(response.status_code, 200)
+
+    @patch.object(Auth, "get_location")
+    @patch.object(UserController, "request_params")
+    @patch.object(RoleRepo, "find_first")
+    @patch.object(UserRepo, "exists")
+    # @patch.object(UserRepo, "new_user")
+    @patch.object(UserRoleRepo, "new_user_role")
+    def test_create_user_fails_for_existing_user(
+        self,
+        mock_user_role_repo_new_user_role,
+        # mock_user_repo_new_user,
+        mock_user_repo_exists,
+        mock_role_repo_find_first,
+        mock_request_params,
+        mock_get_location,
+    ):
+        location = LocationFactory()
+        role = RoleFactory(name="test_role")
+
+        with self.app.app_context():
+            mock_get_location.return_value = location.id
+            mock_role_repo_find_first.return_value = self.mock_role
+            mock_user_repo_exists.return_value = self.mock_user2
+            # mock_user_repo_new_user.return_value = None
+            mock_user_role_repo_new_user_role.return_value = self.mock_user_role
+            mock_request_params.return_value = [
+                "Joseph",
+                "Serunjogi",
+                self.mock_user2.email,
+                role.id,
+                "male",
+                str(datetime.now()),
+                1,
+                "password",
+            ]
+            user_controller = UserController(self.request_context)
+
+            # Act
+            result = user_controller.create_user()
+            print(result)
+            print(result.get_json())
+            # Assert
+            assert result.status_code == 400
+            assert (
+                result.get_json()["msg"]
+                == f"User with email '{self.mock_user2.email}' already exists"
+            )

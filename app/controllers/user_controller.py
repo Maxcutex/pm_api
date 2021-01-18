@@ -99,6 +99,7 @@ class UserController(BaseController):
                 role_objects = Role.query.filter(Role.id.in_(associated_roles)).all()
                 roles = [{"id": role.id, "name": role.name} for role in role_objects]
                 user["user_roles"] = roles
+                del user["password"]
             return self.handle_response(
                 "OK", payload={"users": user_list, "meta": self.pagination_meta(users)}
             )
@@ -157,6 +158,7 @@ class UserController(BaseController):
             )
         try:
             user = self.user_repo.new_user(*user_info).serialize()
+            del user["password"]
             user_role = self.user_role_repo.new_user_role(
                 role_id=role_id, user_id=user["id"]
             )
@@ -209,6 +211,7 @@ class UserController(BaseController):
             )
         try:
             user = self.user_repo.new_user(*user_info).serialize()
+            del user["password"]
             user_role = self.user_role_repo.new_user_role(
                 role_id=role_id, user_id=user["id"]
             )
@@ -231,6 +234,7 @@ class UserController(BaseController):
 
         if user:
             user_data = user.serialize()
+            del user_data["password"]
             user_roles = self.user_role_repo.get_unpaginated(user_id=id)
             user_data["user_roles"] = [
                 user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
@@ -240,6 +244,12 @@ class UserController(BaseController):
             )
 
         return self.handle_response("User not found", status_code=404)
+
+    def update_profile_summary(self):
+        pass
+
+    def update_profile_image(self):
+        pass
 
     def update_user(self, user_id):
         user = self.user_repo.find_first_(id=user_id)
@@ -271,7 +281,7 @@ class UserController(BaseController):
 
         user = self.user_repo.update(user, **user_info)
         user_data = user.serialize()
-
+        del user_data["password"]
         user_roles = self.user_role_repo.get_unpaginated(user_id=user_id)
         user_data["user_roles"] = [
             user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
@@ -305,8 +315,10 @@ class UserController(BaseController):
                 "iss": "accounts.webspoons.com",
             }
             token = Auth.encode_token(user_data)
-            return self.handle_response("OK", payload={"token": token}, status_code=200)
+            return self.handle_response(
+                "OK", payload={"token": token, "user": user.email}, status_code=200
+            )
 
         return self.handle_response(
-            "Username/password combination is wrong", status_code=404
+            "Username/password combination is wrong", status_code=400
         )

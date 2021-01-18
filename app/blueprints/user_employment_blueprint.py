@@ -39,6 +39,7 @@ def get_user_employment(user_employment_id):
         "start_date|required:date",
         "end_date|required:date",
         "is_current|required",
+        "skills|optional:list_int",
     ]
 )
 @Auth.has_permission(["create_user_employment_history"])
@@ -48,14 +49,17 @@ def create_user_employment():
 
 
 @user_employment_blueprint.route("/<int:user_employment_id>", methods=["PUT", "PATCH"])
-# @Security.validator([
-#     "user_id|required:int",
-#     "institution_name|required:string",
-#     "job_title|required:string",
-#     "start_date|required:date",
-#     "end_date|required:date",
-#     "is_current|required",
-# ])
+@Security.validator(
+    [
+        "user_id|required:int",
+        "institution_name|required:string",
+        "job_title|required:string",
+        "start_date|required:date",
+        "end_date|required:date",
+        "is_current|required",
+        "skills|optional:list_int",
+    ]
+)
 # @Auth.has_permission(["update_user_employment_history"])
 # @swag_from("documentation/update_user_employment.yml")
 def update_user_employment(user_employment_id):
