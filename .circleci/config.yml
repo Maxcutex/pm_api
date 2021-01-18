@@ -83,25 +83,18 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-
-  deploy_aws: # Deploy application to AWS staging
-
-
     
-
-
 workflows:
-  version: 2.1
   build-deploy:
     jobs:
       - build
-      - deploy_aws:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - development
+      # - deploy_aws:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only:
+      #           - development
       - aws-code-deploy/deploy:
           application-name: pm-deploy
           bundle-bucket: myApplicationS3Bucket
