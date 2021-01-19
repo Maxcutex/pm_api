@@ -294,7 +294,7 @@ class UserController(BaseController):
         user = self.user_repo.find_first(email=username)
 
         if user is not None and check_password_hash(user.password, password):
-            time_limit = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+            time_limit = datetime.datetime.utcnow() + datetime.timedelta(days=3)
             user_roles = self.user_role_repo.get_unpaginated(user_id=user.id)
             user_roles_list = [
                 user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles

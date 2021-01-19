@@ -1,4 +1,5 @@
 import datetime
+from dateutil import relativedelta
 
 from app.controllers.base_controller import BaseController
 from app.repositories import (
@@ -7,6 +8,7 @@ from app.repositories import (
     UserEmploymentRepo,
     UserEmploymentSkillRepo,
 )
+from app.utils.date_diff_functions import date_diff_string
 
 
 class UserEmploymentController(BaseController):
@@ -23,7 +25,7 @@ class UserEmploymentController(BaseController):
             user_employment_id=employment_id
         )
         for skill in skills:
-            skill_data = self.skill_repo.find_first(id=skill)
+            skill_data = self.skill_repo.find_first(id=skill.skill_id)
             skill_dict = skill_data.serialize()
             skill_dict["name"] = skill_data.name
             skills_list.append(skill_dict)
@@ -38,6 +40,16 @@ class UserEmploymentController(BaseController):
             user_employment_dict["skills"] = self._get_employment_skills(
                 user_employment.id
             )
+            user_employment_dict[
+                "start_date_formatted"
+            ] = user_employment.start_date.strftime("%b, %Y")
+            user_employment_dict[
+                "end_date_formatted"
+            ] = user_employment.end_date.strftime("%b, %Y")
+            user_employment_dict["duration"] = date_diff_string(
+                user_employment.start_date, user_employment.end_date
+            )
+
             user_employment_list.append(user_employment_dict)
         return self.handle_response(
             "OK",

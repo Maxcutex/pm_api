@@ -1,3 +1,5 @@
+from flask_cors import cross_origin
+
 from app.blueprints.base_blueprint import (
     Blueprint,
     BaseBlueprint,
@@ -15,6 +17,7 @@ user_employment_controller = UserEmploymentController(request)
 
 
 @user_employment_blueprint.route("/user/<int:user_id>", methods=["GET"])
+@cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_user_employment_history"])
 # @swag_from('documentation/get_all_user_employment_history.yml')
 def list_user_employment_history(user_id):

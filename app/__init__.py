@@ -32,7 +32,7 @@ def create_app(config_name):
     app.config.from_object(env.app_env[config_name])
     app.config.from_pyfile("../config/env.py")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    # app.config['CORS_HEADERS'] = 'Content-Type'
+    app.config["CORS_HEADERS"] = "Content-Type"
 
     # CORS
 
