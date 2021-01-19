@@ -9,14 +9,16 @@ class SkillController(BaseController):
 
     def list_skills(self):
         skills = self.skill_repo.fetch_all()
-        skill_list = [skill.serialize() for skill in skills.items]
-        return self.handle_response(
-            "OK",
-            payload={
-                "skills": skill_list,
-                "meta": self.pagination_meta(skills),
-            },
-        )
+        if skills:
+            skill_list = [skill.serialize() for skill in skills.items]
+            return self.handle_response(
+                "OK",
+                payload={
+                    "skills": skill_list,
+                    "meta": self.pagination_meta(skills),
+                },
+            )
+        return self.handle_response("Empty dataset", status_code=400)
 
     def get_skill(self, skill_id):
         skill = self.skill_repo.get(skill_id)
