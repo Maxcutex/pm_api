@@ -1,3 +1,5 @@
+from flask_cors import cross_origin
+
 from app.blueprints.base_blueprint import (
     Blueprint,
     BaseBlueprint,
@@ -74,6 +76,7 @@ def register():
 
 
 @user_blueprint.route("/<int:id>/", methods=["GET"])
+# @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
 @Auth.has_permission(["view_users", "view_users_self"])
 # @swag_from('documentation/get_user.yml')
 def list_user(id):

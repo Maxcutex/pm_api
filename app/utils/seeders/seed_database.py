@@ -11,6 +11,13 @@ from app.models import (
     UserRole,
     Permission,
     User,
+    Skill,
+    SkillCategory,
+    UserEmployment,
+    UserEmploymentSkill,
+    UserProjectSkill,
+    UserProject,
+    UserEducation,
 )
 from app.utils import db
 from .seed_data import (
@@ -19,6 +26,13 @@ from .seed_data import (
     role_data,
     user_data,
     user_role_data,
+    skill_data,
+    skill_category_data,
+    user_employment_data,
+    user_employment_skill_data,
+    user_project_data,
+    user_education_data,
+    user_project_skill_data,
 )
 from .test_data import test_data
 
@@ -31,6 +45,19 @@ model_mapper = OrderedDict(
         "user": {"model": User, "data": user_data},
         "user_role": {"model": UserRole, "data": user_role_data},
         "permission": {"model": Permission, "data": permission_data},
+        "skill_category": {"model": SkillCategory, "data": skill_category_data},
+        "skill": {"model": Skill, "data": skill_data},
+        "user_employment": {"model": UserEmployment, "data": user_employment_data},
+        "user_employment_skill": {
+            "model": UserEmploymentSkill,
+            "data": user_employment_skill_data,
+        },
+        "user_education": {"model": UserEducation, "data": user_education_data},
+        "user_project": {"model": UserProject, "data": user_project_data},
+        "user_project_skill": {
+            "model": UserProjectSkill,
+            "data": user_project_skill_data,
+        },
     }
 )
 
@@ -47,16 +74,18 @@ def truncate_db():
 
     for table in reversed(model_mapper):
         try:
-            query = "TRUNCATE table {} CASCADE".format(
+            query = "TRUNCATE table {} RESTART IDENTITY CASCADE".format(
                 model_mapper.get(table).get("model").__tablename__
             )
             db.engine.execute(text(query))
+            print(query)
 
         except OperationalError:
             query = "DELETE FROM {}".format(
                 model_mapper.get(table).get("model").__tablename__
             )
             db.engine.execute(text(query))
+            print(query)
 
 
 def bulk_insert(model, data):

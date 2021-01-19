@@ -32,10 +32,12 @@ def create_app(config_name):
     app.config.from_object(env.app_env[config_name])
     app.config.from_pyfile("../config/env.py")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    # app.config['CORS_HEADERS'] = 'Content-Type'
 
     # CORS
 
     CORS(app)
+    # CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
     # Blueprints
     blueprint = BaseBlueprint(app)
