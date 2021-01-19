@@ -11,3 +11,4 @@ from .skill_category_factory import (
 )
 from .user_employment_factory import UserEmploymentFactory, UserEmploymentFactoryFake
 from .user_project_factory import UserProjectFactory, UserProjectFactoryFake
+from .user_skill_factory import UserSkillFactory, UserSkillFactoryFake
