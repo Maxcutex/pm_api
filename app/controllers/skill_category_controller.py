@@ -56,9 +56,16 @@ class SkillCategoryController(BaseController):
             "Skills Category with this name already exists", status_code=400
         )
 
-    def update_skills_category(self, skills_category_id):
-        name, help_ = self.request_params("name", "help")
-        skills_category = self.skill_category_repo.get(skills_category_id)
+    def update_skills_category(self, update_id):
+        name, help_, skill_category_id = self.request_params(
+            "name", "help", "skill_category_id"
+        )
+
+        if update_id != skill_category_id:
+            return self.handle_response(
+                "Invalid or incorrect skills_category_id provided", status_code=400
+            )
+        skills_category = self.skill_category_repo.get(skill_category_id)
         if skills_category:
             updates = {}
             if name:

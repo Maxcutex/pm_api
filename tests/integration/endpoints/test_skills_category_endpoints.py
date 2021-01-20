@@ -83,16 +83,23 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
         role1 = RoleFactory.create(name="admin")
         user_id = BaseTestCase.user_id()
         skills_category = SkillCategoryFactory.create()
+        skills_category.save()
 
         PermissionFactory.create(keyword="update_skills_categories", role=role1)
         UserRoleFactory.create(user_id=user_id, role=role1)
-        data = {"name": "Super Admin"}
+        data = {
+            "name": "Super Admin",
+            "help": "help",
+            "skill_category_id": skills_category.id,
+        }
         response = self.client().put(
             self.make_url("/skills_categories/{}".format(skills_category.id)),
             data=self.encode_to_json_string(data),
             headers=self.headers(),
         )
+        print(response)
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
+        print(response_json)
         payload = response_json["payload"]
 
         self.assert200(response)

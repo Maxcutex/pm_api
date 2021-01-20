@@ -13,3 +13,4 @@ class UserEducation(BaseModel):
     end_date = db.Column(db.Date(), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey("users.id"))
     user = db.relationship("User", lazy=False)
+    accomplishments = db.Column(db.Text, nullable=True)
