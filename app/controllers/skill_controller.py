@@ -35,3 +35,24 @@ class SkillController(BaseController):
         return self.handle_response(
             "OK", payload={"skill": skill.serialize()}, status_code=201
         )
+
+    def update_skill(self, skill_id):
+        name, skill_category_id = self.request_params("name", "skill_category_id")
+        skill = self.skill_repo.get(skill_id)
+        if skill:
+            skill = self.skill_repo.update(skill, **dict(name=name, skill_category_id=skill_category_id))
+            return self.handle_response(
+                "OK", payload={"skill": skill.serialize()}, status_code=201
+            )
+        return self.handle_response("Location Not Found", status_code=404)
+
+
+    def delete_skill(self, skill_id):
+        skill = self.skill_repo.get(skill_id)
+        update_dict ={"is_deleted": True}
+        if skill:
+            self.skill_repo.update(**update_dict)
+            return self.handle_response("role deleted", payload={"status": "success"})
+        return self.handle_response(
+            "Invalid or incorrect role_id provided", status_code=404
+        )
