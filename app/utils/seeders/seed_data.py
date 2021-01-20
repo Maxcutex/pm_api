@@ -194,6 +194,78 @@ permission_data = [
         "role_id": "1",
         "keyword": "update_user_employment_history",
     },
+    {
+        "id": "36",
+        "name": "view_user_project",
+        "role_id": "1",
+        "keyword": "view_user_project",
+    },
+    {
+        "id": "37",
+        "name": "delete_user_project",
+        "role_id": "1",
+        "keyword": "delete_user_project",
+    },
+    {
+        "id": "38",
+        "name": "create_user_project",
+        "role_id": "1",
+        "keyword": "create_user_project",
+    },
+    {
+        "id": "39",
+        "name": "update_user_project",
+        "role_id": "1",
+        "keyword": "update_user_project",
+    },
+    {
+        "id": "40",
+        "name": "view_user_skill",
+        "role_id": "1",
+        "keyword": "view_user_skill",
+    },
+    {
+        "id": "41",
+        "name": "delete_user_skill",
+        "role_id": "1",
+        "keyword": "delete_user_skill",
+    },
+    {
+        "id": "42",
+        "name": "create_user_skill",
+        "role_id": "1",
+        "keyword": "create_user_skill",
+    },
+    {
+        "id": "43",
+        "name": "update_user_skill",
+        "role_id": "1",
+        "keyword": "update_user_skill",
+    },
+    {
+        "id": "44",
+        "name": "view_user_education",
+        "role_id": "1",
+        "keyword": "view_user_education",
+    },
+    {
+        "id": "45",
+        "name": "delete_user_education",
+        "role_id": "1",
+        "keyword": "delete_user_education",
+    },
+    {
+        "id": "46",
+        "name": "create_user_education",
+        "role_id": "1",
+        "keyword": "create_user_education",
+    },
+    {
+        "id": "47",
+        "name": "update_user_education",
+        "role_id": "1",
+        "keyword": "update_user_education",
+    },
 ]
 skill_category_data = [
     {

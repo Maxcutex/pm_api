@@ -2,6 +2,8 @@
 Module to deal with Activity logs
 """
 from flasgger import swag_from
+from flask_cors import cross_origin
+
 from app.blueprints.base_blueprint import Blueprint, BaseBlueprint, request
 from app.controllers.activity_controller import ActivityController
 from app.utils.security import Security
@@ -16,6 +18,7 @@ activity_controller = ActivityController(request)
 
 
 @activity_blueprint.route("/range", methods=["GET"])
+@cross_origin(supports_credentials=True)
 @Security.url_validator(["date_range|required:range"])
 @swag_from("documentation/get_activities_by_date.yml")
 def list_activities_date_range():
@@ -23,6 +26,7 @@ def list_activities_date_range():
 
 
 @activity_blueprint.route("/action_range", methods=["GET"])
+@cross_origin(supports_credentials=True)
 @Security.url_validator(
     ["action_type|required:enum_options", "date_range|required:range"]
 )
