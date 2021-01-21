@@ -96,8 +96,8 @@ workflows:
       #         only:
       #           - development
       - aws-code-deploy/deploy:
-          application-name: pm-deploy
+          application-name: pm-app
           bundle-bucket: pm-codedeploy-bucket
           bundle-key: pmS3BucketKey
-          deployment-group: pm-instance
-          service-role-arn: arn:aws:iam::362231138751:role/CodeDeployRole
+          deployment-group: pm-deploment-group
+          service-role-arn: arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole
