@@ -23,12 +23,12 @@ def get_skill(skill_id):
 
 
 def create_skill():
-    pass
+    return skill_controller.create_skill()
 
 
 def update_skill(skill_id):
-    pass
+    return skill_controller.update_skill(skill_id)
 
 
 def delete_skill(skill_id):
-    pass
+    return skill_controller.delete_skill(skill_id)
