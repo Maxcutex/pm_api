@@ -16,9 +16,11 @@ class UserEducationController(BaseController):
         self.user_education_repo = UserEducationRepo()
 
     def list_user_education(self, user_id):
+
         user_educations = self.user_education_repo.get_unpaginated(user_id=user_id)
 
         user_education_list = []
+
         for user_education in user_educations:
             user_education_dict = user_education.serialize()
 
@@ -60,6 +62,8 @@ class UserEducationController(BaseController):
             course_name,
             degree_earned,
             accomplishments,
+            institution_city,
+            institution_country,
             start_date,
             end_date,
         ) = self.request_params(
@@ -68,6 +72,8 @@ class UserEducationController(BaseController):
             "course_name",
             "degree_earned",
             "accomplishments",
+            "institution_city",
+            "institution_country",
             "start_date",
             "end_date",
         )
@@ -88,6 +94,8 @@ class UserEducationController(BaseController):
                 course_name=course_name,
                 degree_earned=degree_earned,
                 accomplishments=accomplishments,
+                institution_city=institution_city,
+                institution_country=institution_country,
                 start_date=start_date,
                 end_date=end_date,
             )
@@ -109,6 +117,8 @@ class UserEducationController(BaseController):
             course_name,
             degree_earned,
             accomplishments,
+            institution_city,
+            institution_country,
             start_date,
             end_date,
         ) = self.request_params(
@@ -118,6 +128,8 @@ class UserEducationController(BaseController):
             "course_name",
             "degree_earned",
             "accomplishments",
+            "institution_city",
+            "institution_country",
             "start_date",
             "end_date",
         )
@@ -138,6 +150,8 @@ class UserEducationController(BaseController):
                 "course_name": course_name,
                 "degree_earned": degree_earned,
                 "accomplishments": accomplishments,
+                "institution_city": institution_city,
+                "institution_country": institution_country,
                 "start_date": start_date,
                 "end_date": end_date,
             }

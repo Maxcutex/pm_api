@@ -13,6 +13,8 @@ class UserEducationRepo(BaseRepo):
         course_name,
         degree_earned,
         accomplishments,
+        institution_city,
+        institution_country,
         start_date,
         end_date,
     ):
@@ -21,6 +23,8 @@ class UserEducationRepo(BaseRepo):
             course_name=course_name,
             degree_earned=degree_earned,
             accomplishments=accomplishments,
+            institution_city=institution_city,
+            institution_country=institution_country,
             start_date=start_date,
             end_date=end_date,
             user_id=user_id,

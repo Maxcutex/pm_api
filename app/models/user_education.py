@@ -9,6 +9,8 @@ class UserEducation(BaseModel):
     institution_name = db.Column(db.String, nullable=False)
     course_name = db.Column(db.String, nullable=False)
     degree_earned = db.Column(db.String, nullable=False)
+    institution_city = db.Column(db.String, nullable=False)
+    institution_country = db.Column(db.String, nullable=False)
     start_date = db.Column(db.Date(), nullable=False)
     end_date = db.Column(db.Date(), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey("users.id"))

@@ -10,10 +10,10 @@ def date_diff_string(start_date, end_date):
     if diff.months > 0:
         date_diff += "{} mon ".format(diff.months)
 
-    years = diff.years
-    months = diff.months
-    days = diff.days
+    # years = diff.years
+    # months = diff.months
+    # days = diff.days
 
-    print("{} yrs {} months {} days".format(years, months, days))
+    # print("{} yrs {} months {} days".format(years, months, days))
 
     return date_diff

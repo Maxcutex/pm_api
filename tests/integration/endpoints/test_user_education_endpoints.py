@@ -33,6 +33,8 @@ class TestUserEducationEndpoints(BaseTestCase):
             "course_name": user_emp_data.course_name,
             "degree_earned": user_emp_data.degree_earned,
             "accomplishments": user_emp_data.accomplishments,
+            "institution_city": user_emp_data.institution_city,
+            "institution_country": user_emp_data.institution_country,
             "start_date": str(user_emp_data.start_date),
             "end_date": str(user_emp_data.end_date),
         }
@@ -125,6 +127,8 @@ class TestUserEducationEndpoints(BaseTestCase):
             "course_name": user_emp_data.course_name,
             "degree_earned": user_emp_data.degree_earned,
             "accomplishments": user_emp_data.accomplishments,
+            "institution_city": user_emp_data.institution_city,
+            "institution_country": user_emp_data.institution_country,
             "start_date": str(user_emp_data.start_date),
             "end_date": str(user_emp_data.end_date),
         }
@@ -158,6 +162,8 @@ class TestUserEducationEndpoints(BaseTestCase):
             "course_name": user_emp_data.course_name,
             "degree_earned": user_emp_data.degree_earned,
             "accomplishments": user_emp_data.accomplishments,
+            "institution_city": user_emp_data.institution_city,
+            "institution_country": user_emp_data.institution_country,
             "start_date": str(user_emp_data.start_date),
             "end_date": str(user_emp_data.end_date),
         }

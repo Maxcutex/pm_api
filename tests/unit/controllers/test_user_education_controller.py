@@ -30,6 +30,8 @@ class TestUserEducationController(BaseTestCase):
             course_name="Physcology",
             degree_earned="B.Sc",
             accomplishments="db.Column(db.Text, nullable=False)",
+            institution_city="fake city",
+            institution_country="fake.country()",
             start_date="2004-12-01",
             end_date="2010-12-01",
             is_deleted=False,
@@ -110,6 +112,8 @@ class TestUserEducationController(BaseTestCase):
                 "course_name",
                 "degree_earned",
                 "accomplishments",
+                "fake city",
+                "fake.country()",
                 "2016-12-01",
                 "2020-06-10",
             )
@@ -135,6 +139,8 @@ class TestUserEducationController(BaseTestCase):
         with self.app.app_context():
             mock_user_education_repo_get.return_value = None
             mock_user_education_controller_request_params.return_value = (
+                None,
+                None,
                 None,
                 None,
                 None,
@@ -177,6 +183,8 @@ class TestUserEducationController(BaseTestCase):
                 "course_name",
                 "degree_earned",
                 "accomplishments",
+                "fake city",
+                "fake.country()",
                 "2016-12-01",
                 "2020-06-10",
             )
@@ -212,6 +220,8 @@ class TestUserEducationController(BaseTestCase):
                 "course_name",
                 "degree_earned",
                 "accomplishments",
+                "fake city",
+                "fake.country()",
                 "2016-12-01",
                 "2020-06-10",
             )

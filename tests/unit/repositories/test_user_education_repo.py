@@ -25,6 +25,8 @@ class TestUserEducationRepo(BaseTestCase):
             start_date=user_education.start_date,
             end_date=user_education.end_date,
             accomplishments=user_education.accomplishments,
+            institution_city=user_education.institution_city,
+            institution_country=user_education.institution_country,
         )
         self.assertIsInstance(new_user_education, UserEducation)
         self.assertEqual(str(new_user_education.user_id), str(user.id))

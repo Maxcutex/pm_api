@@ -26,6 +26,8 @@ class UserEducationFactory(factory.alchemy.SQLAlchemyModelFactory):
     institution_name = fake.company()
     course_name = "Physcology"
     degree_earned = "B.Sc"
+    institution_city = fake.city()
+    institution_country = fake.country()
     accomplishments = "db.Column(db.Text, nullable=False)"
     start_date = fake.date_between()
     end_date = fake.date_between()
@@ -41,6 +43,8 @@ class UserEducationFactoryFake(factory.Factory):
     institution_name = fake.company()
     course_name = "Physcology"
     degree_earned = "B.Sc"
+    institution_city = fake.city()
+    institution_country = fake.country()
     accomplishments = "db.Column(db.Text, nullable=False)"
     start_date = fake.date_between()
     end_date = fake.date_between()

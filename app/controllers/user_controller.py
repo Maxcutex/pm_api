@@ -236,6 +236,11 @@ class UserController(BaseController):
             user_data = user.serialize()
             del user_data["password"]
             user_roles = self.user_role_repo.get_unpaginated(user_id=id)
+
+            if user_data["employment_date"] is not None:
+                user_data["employment_date_formatted"] = user.employment_date.strftime(
+                    "%b %d, %Y"
+                )
             user_data["user_roles"] = [
                 user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
             ]
@@ -245,11 +250,64 @@ class UserController(BaseController):
 
         return self.handle_response("User not found", status_code=404)
 
-    def update_profile_summary(self):
+    def update_profile_summary(self, update_id):
         pass
 
-    def update_profile_image(self):
+    def update_profile_image(self, update_id):
         pass
+
+    def self_update_account_details(self, update_id):
+        (
+            user_id,
+            password,
+            location_id,
+            date_of_birth,
+            gender,
+            experience_years,
+            personal_email,
+            job_title,
+            phone,
+        ) = self.request_params(
+            "user_id",
+            "password",
+            "location_id",
+            "date_of_birth",
+            "gender",
+            "experience_years",
+            "personal_email",
+            "job_title",
+            "phone",
+        )
+        user = self.user_repo.find_first_(id=user_id)
+
+        if not user:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User not found"}, status_code=404
+            )
+
+        if user.is_deleted:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User already deleted"}, status_code=400
+            )
+        updates = {
+            "password": generate_password_hash(password),
+            "location_id": location_id,
+            "date_of_birth": date_of_birth,
+            "gender": gender,
+            "experience_years": experience_years,
+            "personal_email": personal_email,
+            "job_title": job_title,
+            "phone": phone,
+        }
+        user = self.user_repo.update(user, **updates)
+        user_data = user.serialize()
+        del user_data["password"]
+        user_roles = self.user_role_repo.get_unpaginated(user_id=user_id)
+        user_data["user_roles"] = [
+            user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
+        ]
+
+        return self.handle_response("OK", payload={"user": user_data}, status_code=200)
 
     def update_user(self, user_id):
         user = self.user_repo.find_first_(id=user_id)

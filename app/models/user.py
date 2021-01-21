@@ -25,3 +25,8 @@ class User(BaseModel):
     terminal_date = db.Column(db.Date(), nullable=True)
     experience_years = db.Column(db.Integer, nullable=True)
     personal_email = db.Column(db.String(constants.MAXLEN), nullable=True)
+    job_title = db.Column(db.String, nullable=True)
+    phone = db.Column(db.String, nullable=True)
+    website = db.Column(db.String, nullable=True)
+    linked_in = db.Column(db.String, nullable=True)
+    github = db.Column(db.String, nullable=True)

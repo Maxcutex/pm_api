@@ -21,6 +21,7 @@ user_data = [
         "first_name": "Eno",
         "last_name": "Bassey",
         "email": "eno.bassey@webspoons.com",
+        "personal_email": "ennyboy@gmail.com",
         "password": generate_password_hash("demo1"),
         "last_password": "",
         "location_id": 1,
@@ -29,6 +30,10 @@ user_data = [
         "date_of_birth": datetime.strptime("1970-04-24", "%Y-%m-%d"),
         "is_active": True,
         "is_deleted": False,
+        "employment_date": datetime.strptime("2020-04-24", "%Y-%m-%d"),
+        "experience_years": 11,
+        "job_title": "Senior Software Engineer",
+        "phone": "08037444458",
         "profile_summary": "Experienced Solutions Architect with a demonstrated history of working in the "
         "financial services industry. Skilled in Databases, IT Strategy, Mobile Payments, "
         "Software Project Management, and Solution Implementation. A strong business development "
@@ -41,6 +46,7 @@ user_data = [
         "first_name": "Ayo",
         "last_name": "Ajebeku",
         "email": "ayo.ajebeku@webspoons.com",
+        "personal_email": "ennyboy22@gmail.com",
         "password": generate_password_hash("demo1"),
         "last_password": "",
         "location_id": 1,
@@ -49,6 +55,10 @@ user_data = [
         "date_of_birth": datetime.strptime("1970-04-24", "%Y-%m-%d"),
         "is_active": True,
         "is_deleted": False,
+        "employment_date": datetime.strptime("2020-04-24", "%Y-%m-%d"),
+        "experience_years": 11,
+        "job_title": "Software Engineer",
+        "phone": "08037444458",
         "profile_summary": "Experienced Solutions Architect with a demonstrated history of working in the "
         "financial services industry. Skilled in Databases, IT Strategy, Mobile Payments, "
         "Software Project Management, and Solution Implementation. A strong business development "
@@ -832,16 +842,22 @@ user_education_data = [
         "institution_name": "University of Calabar",
         "course_name": "Computer Science",
         "degree_earned": "Bsc",
+        "institution_city": "Calabar",
+        "institution_country": "Nigeria",
         "start_date": "2017-12-01",
         "end_date": "2021-06-01",
+        "phone": "080475757575",
         "user_id": 1,
     },
     {
         "institution_name": "University of Lagos",
         "course_name": "Computer Science",
         "degree_earned": "Bsc",
+        "institution_city": "Lagos",
+        "institution_country": "Nigeria",
         "start_date": "2017-12-01",
         "end_date": "2021-06-01",
+        "phone": "080475757575",
         "user_id": 2,
     },
 ]

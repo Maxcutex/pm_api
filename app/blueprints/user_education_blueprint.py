@@ -39,6 +39,8 @@ def get_user_education(user_education_id):
         "course_name|required:string",
         "degree_earned|required:string",
         "accomplishments|optional:string",
+        "institution_city|required:string",
+        "institution_country|required:string",
         "start_date|required:date",
         "end_date|required:date",
     ]
