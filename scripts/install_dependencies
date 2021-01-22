@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo apt install python3-pip
+sudo apt install -y python3-pip
 pip3 install virtualenv
 virtualenv pm-api
 source pm-api/bin/activate
