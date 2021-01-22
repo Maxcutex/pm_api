@@ -1,2 +1,3 @@
 #!/bin/bash
+cd /var/www/html/PM-API
 python3 run.py runserver
