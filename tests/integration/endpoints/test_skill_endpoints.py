@@ -4,4 +4,8 @@ class TestSkillEndpoints(BaseTestCase):
 
 	def setUp(self):
 		self.BaseSetUp()
-		
+
+
+	def tearDown(self):
+		self.BaseTearDown()
+
