@@ -1,0 +1,9 @@
+#!/bin/bash
+sudo apt install python3-pip
+pip3 install virtualenv
+virtualenv pm-api
+source pm-api/bin/activate
+pip3 install -r requirements.txt
+flask seed-database
+bash redis.sh
+python3 run.py db migrate
