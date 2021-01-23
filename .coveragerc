@@ -1,4 +1,0 @@
-[run]
-omit =
-/app/blueprints/activity_blueprint.py
-/app/blueprints/home_blueprint.py
