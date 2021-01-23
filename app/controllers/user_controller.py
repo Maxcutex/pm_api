@@ -250,8 +250,36 @@ class UserController(BaseController):
 
         return self.handle_response("User not found", status_code=404)
 
-    def update_profile_summary(self, update_id):
-        pass
+    def update_user_summary(self, update_id):
+        (profile_summary,) = self.request_params(
+            "profile_summary",
+        )
+
+        user = self.user_repo.find_first_(id=update_id)
+        if not user:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User not found"}, status_code=404
+            )
+
+        if user.is_deleted:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User already deleted"}, status_code=400
+            )
+
+        updates = {
+            "profile_summary": profile_summary,
+        }
+
+        user = self.user_repo.update(user, **updates)
+
+        user_data = user.serialize()
+        del user_data["password"]
+        user_roles = self.user_role_repo.get_unpaginated(user_id=update_id)
+        user_data["user_roles"] = [
+            user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
+        ]
+
+        return self.handle_response("OK", payload={"user": user_data}, status_code=200)
 
     def update_profile_image(self, update_id):
         pass

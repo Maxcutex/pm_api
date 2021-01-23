@@ -33,6 +33,12 @@ class UserEducationController(BaseController):
             user_education_dict["duration"] = date_diff_string(
                 user_education.start_date, user_education.end_date
             )
+            user_education_dict["start_date"] = user_education.start_date.strftime(
+                "%Y-%m-%d"
+            )
+            user_education_dict["end_date"] = user_education.end_date.strftime(
+                "%Y-%m-%d"
+            )
 
             user_education_list.append(user_education_dict)
         return self.handle_response(

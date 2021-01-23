@@ -17,7 +17,7 @@ skills_category_controller = SkillCategoryController(request)
 
 
 @skills_category_blueprint.route("/", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_skills_categories"])
 # @swag_from('documentation/get_all_skill_categories.yml')
 def list_skill_categories():
@@ -25,7 +25,7 @@ def list_skill_categories():
 
 
 @skills_category_blueprint.route("/<int:skill_category_id>", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_skills_categories"])
 # @swag_from('documentation/get_skill_category_by_id.yml')
 def get_skill_category(skill_category_id):
@@ -33,7 +33,7 @@ def get_skill_category(skill_category_id):
 
 
 @skills_category_blueprint.route("/", methods=["POST"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.validator(["name|required"])
 @Auth.has_permission(["create_skills_categories"])
 # @swag_from('documentation/create_skill_category.yml')
@@ -42,7 +42,7 @@ def create_skill_category():
 
 
 @skills_category_blueprint.route("/<int:update_id>", methods=["PUT", "PATCH"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.validator(
     [
         "name|required",
@@ -56,7 +56,7 @@ def update_skill_category(update_id):
 
 
 @skills_category_blueprint.route("/<int:skill_category_id>", methods=["DELETE"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["delete_skills_categories"])
 # @swag_from("documentation/delete_skill_category.yml")
 def delete_skill_category(skill_category_id):

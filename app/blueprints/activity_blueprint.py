@@ -18,7 +18,7 @@ activity_controller = ActivityController(request)
 
 
 @activity_blueprint.route("/range", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.url_validator(["date_range|required:range"])
 @swag_from("documentation/get_activities_by_date.yml")
 def list_activities_date_range():
@@ -26,7 +26,7 @@ def list_activities_date_range():
 
 
 @activity_blueprint.route("/action_range", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.url_validator(
     ["action_type|required:enum_options", "date_range|required:range"]
 )

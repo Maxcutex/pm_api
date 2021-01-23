@@ -15,7 +15,7 @@ user_skill_controller = UserSkillController(request)
 
 
 @user_skill_blueprint.route("/user/<int:user_id>", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_user_skill"])
 # @swag_from('documentation/get_all_user_skill.yml')
 def list_user_skills(user_id):
@@ -23,7 +23,7 @@ def list_user_skills(user_id):
 
 
 @user_skill_blueprint.route("/user-single/<int:user_skill_id>", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_user_skill"])
 # @swag_from('documentation/get_user_skill_by_id.yml')
 def get_user_skill(user_skill_id):
@@ -31,7 +31,7 @@ def get_user_skill(user_skill_id):
 
 
 @user_skill_blueprint.route("/", methods=["POST"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.validator(
     [
         "user_id|required:int",
@@ -47,7 +47,7 @@ def create_user_skill():
 
 
 @user_skill_blueprint.route("/<int:user_skill_id>", methods=["PUT", "PATCH"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.validator(
     [
         "user_id|required:int",
@@ -63,7 +63,7 @@ def update_user_skill(user_skill_id):
 
 
 @user_skill_blueprint.route("/<int:user_skill_id>", methods=["DELETE"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["delete_user_skill"])
 # @swag_from("documentation/delete_user_skill.yml")
 def delete_user_skill(user_skill_id):

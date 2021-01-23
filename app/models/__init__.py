@@ -15,6 +15,7 @@ from .user_project import UserProject
 from .user_project_skill import UserProjectSkill
 from .user_skill import UserSkill
 from .location import Location
+from .presigned_url_contract import PresignedUrlContract
 
 __all__ = (
     "Role",

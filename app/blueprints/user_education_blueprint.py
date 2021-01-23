@@ -15,7 +15,7 @@ user_education_controller = UserEducationController(request)
 
 
 @user_education_blueprint.route("/user/<int:user_id>", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_user_education"])
 # @swag_from('documentation/get_all_user_education.yml')
 def list_user_education(user_id):
@@ -23,7 +23,7 @@ def list_user_education(user_id):
 
 
 @user_education_blueprint.route("/user-single/<int:user_education_id>", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_user_education"])
 # @swag_from('documentation/get_user_education_by_id.yml')
 def get_user_education(user_education_id):
@@ -31,7 +31,7 @@ def get_user_education(user_education_id):
 
 
 @user_education_blueprint.route("/", methods=["POST"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.validator(
     [
         "user_id|required:int",
@@ -52,7 +52,7 @@ def create_user_education():
 
 
 @user_education_blueprint.route("/<int:update_id>", methods=["PUT", "PATCH"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Security.validator(
     [
         "user_id|required:int",
@@ -72,7 +72,7 @@ def update_user_education(update_id):
 
 
 @user_education_blueprint.route("/<int:user_education_id>", methods=["DELETE"])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["delete_user_education"])
 # @swag_from("documentation/delete_user_education.yml")
 def delete_user_education(user_education_id):

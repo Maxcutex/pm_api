@@ -1,7 +1,9 @@
 import datetime
 from dateutil import relativedelta
+from sqlalchemy import desc
 
 from app.controllers.base_controller import BaseController
+from app.models import UserEmployment
 from app.repositories import (
     UserRepo,
     SkillRepo,
@@ -32,7 +34,9 @@ class UserEmploymentController(BaseController):
         return skills_list
 
     def list_user_employment_history(self, user_id):
-        user_employments = self.user_employment_repo.get_unpaginated(user_id=user_id)
+        user_employments = self.user_employment_repo.get_unpaginated_desc(
+            self.user_employment_repo._model.id, user_id=user_id
+        )
 
         user_employment_list = []
         for user_employment in user_employments:
@@ -46,6 +50,12 @@ class UserEmploymentController(BaseController):
             user_employment_dict[
                 "end_date_formatted"
             ] = user_employment.end_date.strftime("%b, %Y")
+            user_employment_dict["start_date"] = user_employment.start_date.strftime(
+                "%Y-%m-%d"
+            )
+            user_employment_dict["end_date"] = user_employment.end_date.strftime(
+                "%Y-%m-%d"
+            )
             user_employment_dict["duration"] = date_diff_string(
                 user_employment.start_date, user_employment.end_date
             )
