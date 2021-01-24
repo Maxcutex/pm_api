@@ -111,6 +111,34 @@ def update_user(user_id):
     return user_controller.update_user(user_id)
 
 
+@user_blueprint.route("/<int:user_id>/info", methods=["PUT", "PATCH"])
+# @cross_origin(supports_credentials=True)
+@Auth.has_permission(["update_user", "update_user_self"])
+@Security.validator(
+    [
+        "first_name|required",
+        "last_name|required",
+        "job_title|optional",
+        "experience_years|optional",
+        "phone|optional",
+        "user_id|required",
+        "git_hub|optional",
+        "linked_in|optional",
+        "personal_email|optional:url",
+    ]
+)
+# @swag_from('documentation/update_user.yml')
+def update_user_info(user_id):
+    return user_controller.update_user_info(user_id)
+
+
+@user_blueprint.route("/<int:user_id>/image", methods=["PUT", "PATCH"])
+# @cross_origin(supports_credentials=True)
+@Auth.has_permission(["update_user", "update_user_self"])
+def update_profile_image(user_id):
+    return user_controller.update_profile_image(user_id)
+
+
 @user_blueprint.route("/login", methods=["POST"])
 def authenticate_user():
     return user_controller.authenticate_user()
