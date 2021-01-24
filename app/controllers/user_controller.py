@@ -7,6 +7,8 @@ from app.utils.auth import Auth
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.utils.id_generator import PushID
 
+ALLOWED_EXTENSIONS = set(["jpg", "jpeg", "png"])
+
 
 class UserController(BaseController):
     """
@@ -87,8 +89,15 @@ class UserController(BaseController):
         per_page = params.get("per_page")
 
         users = self.user_repo.paginate(error_out=False, page=page, per_page=per_page)
+        user_list = []
         if users.items:
-            user_list = [user.serialize() for user in users.items]
+            for user in users.items:
+                user_item = user.serialize()
+                if user.employment_date is not None:
+                    user_item["employment_date"] = user.employment_date.strftime(
+                        "%b %d, %Y"
+                    )
+                user_list.append(user_item)
             for user in user_list:
                 associated_roles = [
                     user_role.role_id
@@ -365,6 +374,42 @@ class UserController(BaseController):
             user_role = self.user_role_repo.find_first(user_id=user_id)
             self.user_role_repo.update(user_role, user_id=user_id, role_id=role_id)
 
+        user = self.user_repo.update(user, **user_info)
+        user_data = user.serialize()
+        del user_data["password"]
+        user_roles = self.user_role_repo.get_unpaginated(user_id=user_id)
+        user_data["user_roles"] = [
+            user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
+        ]
+
+        return self.handle_response("OK", payload={"user": user_data}, status_code=200)
+
+    def update_user_info(self, user_id):
+        user = self.user_repo.find_first_(id=user_id)
+
+        if not user:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User not found"}, status_code=404
+            )
+
+        if user.is_deleted:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User already deleted"}, status_code=400
+            )
+
+        user_info = self.request_params_dict(
+            "first_name",
+            "last_name",
+            "job_title",
+            "experience_years",
+            "phone",
+            "personal_email",
+            "git_hub",
+            "linked_in",
+        )
+        import pdb
+
+        pdb.set_trace()
         user = self.user_repo.update(user, **user_info)
         user_data = user.serialize()
         del user_data["password"]
