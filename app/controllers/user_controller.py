@@ -93,9 +93,10 @@ class UserController(BaseController):
         if users.items:
             for user in users.items:
                 user_item = user.serialize()
-                user_item["employment_date"] = user.employment_date.strftime(
-                    "%b %d, %Y"
-                )
+                if user.employment_date is not None:
+                    user_item["employment_date"] = user.employment_date.strftime(
+                        "%b %d, %Y"
+                    )
                 user_list.append(user_item)
             for user in user_list:
                 associated_roles = [
