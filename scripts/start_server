@@ -1,3 +1,8 @@
 #!/bin/bash
 cd /var/www/html/PM-API
-python run.py runserver
+docker-compose up -d
+docker-compose exec api bash
+python run.py db upgrade
+
+
+
