@@ -103,5 +103,8 @@ workflows:
           service-role-arn: arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - development
 
-            
