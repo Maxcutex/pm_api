@@ -21,8 +21,11 @@ class BaseBlueprint:
         from app.blueprints.skills_category_blueprint import skills_category_blueprint
         from app.blueprints.user_employment_blueprint import user_employment_blueprint
         from app.blueprints.user_project_blueprint import user_project_blueprint
+        from app.blueprints.skill_blueprint import skill_blueprint
+
         from app.blueprints.user_skill_blueprint import user_skill_blueprint
         from app.blueprints.user_education_blueprint import user_education_blueprint
+
 
         self.app.register_blueprint(home_blueprint)
         self.app.register_blueprint(activity_blueprint)
@@ -31,5 +34,6 @@ class BaseBlueprint:
         self.app.register_blueprint(skills_category_blueprint)
         self.app.register_blueprint(user_employment_blueprint)
         self.app.register_blueprint(user_project_blueprint)
+        self.app.register_blueprint(skill_blueprint)
         self.app.register_blueprint(user_skill_blueprint)
         self.app.register_blueprint(user_education_blueprint)
