@@ -15,7 +15,6 @@ class SkillCategoryFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = SkillCategory
         sqlalchemy_session = db.session
 
-    id = factory.Sequence(lambda n: n)
     name = factory.Faker("name")
     help = factory.Faker("paragraph")
     is_active = fake.boolean(chance_of_getting_true=75)
@@ -49,7 +48,6 @@ class SkillCategoryFactoryFake(factory.Factory):
     class Meta:
         model = SkillCategory
 
-    id = factory.Sequence(lambda n: n)
     name = factory.Faker("name")
     help = factory.Faker("paragraph")
     is_active = fake.boolean(chance_of_getting_true=75)

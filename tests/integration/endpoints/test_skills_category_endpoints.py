@@ -60,6 +60,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
         role = RoleFactory.create()
         user_id = BaseTestCase.user_id()
         skills_category = SkillCategoryFactory.create()
+        skills_category.save()
         PermissionFactory.create(keyword="view_skills_categories", role=role)
         UserRoleFactory.create(user_id=user_id, role=role)
 
@@ -67,6 +68,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
             self.make_url("/skills_categories/{}".format(skills_category.id)),
             headers=self.headers(),
         )
+
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
         payload = response_json["payload"]
 
@@ -124,6 +126,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
     def test_delete_skill_category_endpoint_with_right_permission(self):
         role = RoleFactory.create()
         skills_category = SkillCategoryFactory.create()
+        skills_category.save()
         user_id = BaseTestCase.user_id()
 
         PermissionFactory.create(keyword="delete_skills_categories", role=role)
@@ -132,6 +135,7 @@ class TestSkillsCategoryEndpoints(BaseTestCase):
             self.make_url(f"/skills_categories/{skills_category.id}"),
             headers=self.headers(),
         )
+
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
         payload = response_json["payload"]
 
