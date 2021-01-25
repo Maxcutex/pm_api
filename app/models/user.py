@@ -7,10 +7,9 @@ from ..utils.enums import Gender
 class User(BaseModel):
     __tablename__ = "users"
 
-    # slack_id = db.Column(db.String, unique=True, nullable=False)
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
-    email = db.Column(db.String(constants.MAXLEN), nullable=True)
+    email = db.Column(db.String(constants.MAXLEN), nullable=False)
     password = db.Column(db.String, nullable=False)
     last_password = db.Column(db.String, nullable=True)
     location_id = db.Column(db.Integer(), db.ForeignKey("locations.id"), default=1)
@@ -22,3 +21,12 @@ class User(BaseModel):
     user_role = db.relationship("UserRole", backref="user_roles", lazy=True)
     is_active = db.Column(db.Boolean, default=True, nullable=True)
     is_deleted = db.Column(db.Boolean, default=True, nullable=True)
+    employment_date = db.Column(db.Date(), nullable=True)
+    terminal_date = db.Column(db.Date(), nullable=True)
+    experience_years = db.Column(db.Integer, nullable=True)
+    personal_email = db.Column(db.String(constants.MAXLEN), nullable=True)
+    job_title = db.Column(db.String, nullable=True)
+    phone = db.Column(db.String, nullable=True)
+    website = db.Column(db.String, nullable=True)
+    linked_in = db.Column(db.String, nullable=True)
+    github = db.Column(db.String, nullable=True)

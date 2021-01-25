@@ -1,3 +1,5 @@
+from flask_cors import cross_origin
+
 from app.blueprints.base_blueprint import (
     Blueprint,
     BaseBlueprint,
@@ -16,6 +18,7 @@ user_controller = UserController(request)
 
 
 @user_blueprint.route("/admin", methods=["GET"])
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["create_user_roles"])
 # @swag_from('documentation/get_all_admin_users.yml')
 def list_admin_users():
@@ -23,6 +26,7 @@ def list_admin_users():
 
 
 @user_blueprint.route("/", methods=["GET"])
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_users"])
 # @swag_from('documentation/get_all_users.yml')
 def list_all_users():
@@ -30,6 +34,7 @@ def list_all_users():
 
 
 @user_blueprint.route("/<int:id>/", methods=["DELETE"])
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["delete_user"])
 # @swag_from('documentation/delete_user.yml')
 def delete_user(id):
@@ -74,13 +79,23 @@ def register():
 
 
 @user_blueprint.route("/<int:id>/", methods=["GET"])
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_users", "view_users_self"])
 # @swag_from('documentation/get_user.yml')
 def list_user(id):
     return user_controller.list_user(id)
 
 
+@user_blueprint.route("/<int:user_id>/summary", methods=["PUT", "PATCH"])
+# @cross_origin(supports_credentials=True)
+@Auth.has_permission(["update_user", "update_user_self"])
+# @swag_from('documentation/update_user.yml')
+def update_user_summary(user_id):
+    return user_controller.update_user_summary(user_id)
+
+
 @user_blueprint.route("/<int:user_id>", methods=["PUT", "PATCH"])
+# @cross_origin(supports_credentials=True)
 @Auth.has_permission(["update_user", "update_user_self"])
 @Security.validator(
     [
@@ -94,6 +109,34 @@ def list_user(id):
 # @swag_from('documentation/update_user.yml')
 def update_user(user_id):
     return user_controller.update_user(user_id)
+
+
+@user_blueprint.route("/<int:user_id>/info", methods=["PUT", "PATCH"])
+# @cross_origin(supports_credentials=True)
+@Auth.has_permission(["update_user", "update_user_self"])
+@Security.validator(
+    [
+        "first_name|required",
+        "last_name|required",
+        "job_title|optional",
+        "experience_years|optional",
+        "phone|optional",
+        "user_id|required",
+        "git_hub|optional",
+        "linked_in|optional",
+        "personal_email|optional:url",
+    ]
+)
+# @swag_from('documentation/update_user.yml')
+def update_user_info(user_id):
+    return user_controller.update_user_info(user_id)
+
+
+@user_blueprint.route("/<int:user_id>/image", methods=["PUT", "PATCH"])
+# @cross_origin(supports_credentials=True)
+@Auth.has_permission(["update_user", "update_user_self"])
+def update_profile_image(user_id):
+    return user_controller.update_profile_image(user_id)
 
 
 @user_blueprint.route("/login", methods=["POST"])

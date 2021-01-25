@@ -154,7 +154,11 @@ class TestSkillCategoryController(BaseTestCase):
         # Arrange
         with self.app.app_context():
             mock_skills_category_repo_get.return_value = None
-            mock_skills_category_controller_request_params.return_value = (None, None)
+            mock_skills_category_controller_request_params.return_value = (
+                None,
+                None,
+                None,
+            )
             skills_category_controller = SkillCategoryController(self.request_context)
 
             # Act
@@ -186,6 +190,7 @@ class TestSkillCategoryController(BaseTestCase):
             mock_skills_category_controller_request_params.return_value = (
                 "Mock name",
                 "Mock help",
+                1,
             )
             skills_category_controller = SkillCategoryController(self.request_context)
 
@@ -197,6 +202,39 @@ class TestSkillCategoryController(BaseTestCase):
             assert (
                 result.get_json()["msg"] == "Skills Category with this name"
                 " already exists"
+            )
+
+    @patch.object(SkillCategoryRepo, "find_first")
+    @patch.object(SkillCategoryController, "request_params")
+    @patch.object(SkillCategoryRepo, "get")
+    def test_update_skills_category_when_id_do_not_match(
+        self,
+        mock_skills_category_repo_get,
+        mock_skills_category_controller_request_params,
+        mock_skills_category_repo_find_first,
+    ):
+        """Test update_skills_category when role doesn't exist."""
+        # Arrange
+        with self.app.app_context():
+            mock_skills_category_repo_get.return_value = self.mock_skills_category
+            mock_skills_category_repo_find_first.return_value = (
+                self.mock_skills_category
+            )
+            mock_skills_category_controller_request_params.return_value = (
+                "Mock name",
+                "Mock help",
+                8,
+            )
+            skills_category_controller = SkillCategoryController(self.request_context)
+
+            # Act
+            result = skills_category_controller.update_skills_category(1)
+
+            # Assert
+            assert result.status_code == 400
+            assert (
+                result.get_json()["msg"]
+                == "Invalid or incorrect skills_category_id provided"
             )
 
     @patch.object(SkillCategoryRepo, "find_first")
@@ -216,6 +254,7 @@ class TestSkillCategoryController(BaseTestCase):
             mock_skills_category_controller_request_params.return_value = (
                 "Mock name",
                 "Mock help",
+                1,
             )
             skills_category_controller = SkillCategoryController(self.request_context)
 

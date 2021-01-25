@@ -159,7 +159,7 @@ class BaseRepo:
 
     @filter_deleted
     def get_unpaginated_desc(self, *args, **kwargs):
-        """Query and filter the data of the model in ascending order."""
+        """Query and filter the data of the model in descending order."""
         return self._model.query.filter_by(**kwargs).order_by(desc(*args)).all()
 
     @filter_deleted

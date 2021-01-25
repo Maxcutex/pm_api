@@ -34,6 +34,7 @@ class UserEmploymentFactory(factory.alchemy.SQLAlchemyModelFactory):
     job_title = fake.job()
     start_date = fake.date_between()
     end_date = fake.date_between()
+    is_current = False
 
 
 class UserEmploymentFactoryFake(factory.Factory):

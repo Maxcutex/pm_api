@@ -24,6 +24,7 @@ class BaseBlueprint:
         from app.blueprints.skill_blueprint import skill_blueprint
 
         from app.blueprints.user_skill_blueprint import user_skill_blueprint
+        from app.blueprints.user_education_blueprint import user_education_blueprint
 
 
         self.app.register_blueprint(home_blueprint)
@@ -35,3 +36,4 @@ class BaseBlueprint:
         self.app.register_blueprint(user_project_blueprint)
         self.app.register_blueprint(skill_blueprint)
         self.app.register_blueprint(user_skill_blueprint)
+        self.app.register_blueprint(user_education_blueprint)
