@@ -12,12 +12,12 @@ class UserEmployment(BaseModel):
         db.Enum(EmploymentType, values_callable=lambda obj: [e.value for e in obj]),
         nullable=True,
     )
-    institution_url = db.Column(db.String, nullable=False)
+    institution_url = db.Column(db.String, nullable=True)
     institution_city = db.Column(db.String, nullable=False)
     institution_country = db.Column(db.String, nullable=False)
-    institution_size = db.Column(db.String, nullable=False)
-    work_summary = db.Column(db.Text, nullable=False)
-    accomplishments = db.Column(db.Text, nullable=False)
+    institution_size = db.Column(db.String, nullable=True)
+    work_summary = db.Column(db.Text, nullable=True)
+    accomplishments = db.Column(db.Text, nullable=True)
     start_date = db.Column(db.Date(), nullable=False)
     end_date = db.Column(db.Date(), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey("users.id"))

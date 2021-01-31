@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app.repositories.base_repo import BaseRepo
 from app.models.user_skill import UserSkill
 
@@ -13,6 +15,8 @@ class UserSkillRepo(BaseRepo):
             skill_id=skill_id,
             is_deleted=is_deleted,
             user_id=user_id,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
         )
 
         new_user_skill.save()

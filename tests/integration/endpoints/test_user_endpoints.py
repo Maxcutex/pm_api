@@ -230,7 +230,14 @@ class TestUserEndpoints(BaseTestCase):
         user = UserFactory()
         user.save()
         UserRoleFactory(user_id=user.id, role=role)
-        user_data = dict(first_name="Andela", last_name="Eats", role_id=100)
+        user_data = dict(
+            first_name="Andela",
+            last_name="Eats",
+            role_id=100,
+            gender="male",
+            date_of_birth="2020-10-01",
+            employment_date="2020-10-01",
+        )
 
         response = self.client().patch(
             self.make_url(f"/users/{user.id}"),
@@ -249,7 +256,15 @@ class TestUserEndpoints(BaseTestCase):
         user = UserFactory.create(id=600)
         user.save()
 
-        user_data = dict(first_name="Andela", last_name="Eats", user_id=601)
+        user_data = dict(
+            first_name="Andela",
+            last_name="Eats",
+            user_id=601,
+            role_id=1,
+            gender="male",
+            date_of_birth="2020-10-01",
+            employment_date="2020-10-01",
+        )
 
         response = self.client().put(
             self.make_url("/users/" + str(user.id + 1)),
@@ -269,7 +284,15 @@ class TestUserEndpoints(BaseTestCase):
         user = UserFactory.create(is_deleted=True)
         user.save()
 
-        user_data = dict(first_name="Andela", last_name="Eats", user_id=user.id)
+        user_data = dict(
+            first_name="Andela",
+            last_name="Eats",
+            user_id=user.id,
+            role_id=1,
+            gender="male",
+            date_of_birth="2020-10-01",
+            employment_date="2020-10-01",
+        )
         response = self.client().put(
             self.make_url("/users/" + str(user.id)),
             headers=self.headers(),

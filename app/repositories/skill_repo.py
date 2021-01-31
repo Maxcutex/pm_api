@@ -6,13 +6,8 @@ class SkillRepo(BaseRepo):
     def __init__(self):
         BaseRepo.__init__(self, Skill)
 
-    def new_skill(self, name, skill_category_id, is_active=True, is_deleted=False):
-        new_skill = Skill(
-            name=name,
-            skill_category_id=skill_category_id,
-            is_active=is_active,
-            is_deleted=is_deleted,
-        )
+    def new_skill(self, name, skill_category_id):
+        skill = Skill(name=name, skill_category_id=skill_category_id)
 
-        new_skill.save()
-        return new_skill
+        skill.save()
+        return skill

@@ -18,6 +18,7 @@ class UserSkillController(BaseController):
         user_skill_list = []
         for user_skill in user_skills:
             user_skill_dict = user_skill.serialize()
+            user_skill_dict["name"] = user_skill.skill.name
             user_skill_list.append(user_skill_dict)
         return self.handle_response(
             "OK",
@@ -49,10 +50,12 @@ class UserSkillController(BaseController):
 
             if skill_data is None:
                 return self.handle_response("Skill Id is invalid", status_code=400)
+
             user_skill = self.user_skill_repo.new_user_skill(
                 skill_level=skill_level, years=years, skill_id=skill_id, user_id=user_id
             )
-
+            # import pdb
+            # pdb.set_trace()
             return self.handle_response(
                 "OK",
                 payload={"user_skill": user_skill.serialize()},

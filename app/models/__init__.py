@@ -15,6 +15,8 @@ from .user_project import UserProject
 from .user_project_skill import UserProjectSkill
 from .user_skill import UserSkill
 from .location import Location
+from .presigned_url_contract import PresignedUrlContract
+from .client import Client
 
 __all__ = (
     "Role",
@@ -31,6 +33,7 @@ __all__ = (
     "UserEmployment",
     "UserEducation",
     "Location",
+    "Client",
 )
 
 from .listener_helpers import attach_listen_type
@@ -49,6 +52,7 @@ tables_logged_after_every_insert = [
     Skill,
     SkillCategory,
     Location,
+    Client,
 ]
 tables_logged_after_every_update = [
     UserEducation,
@@ -64,6 +68,7 @@ tables_logged_after_every_update = [
     Skill,
     SkillCategory,
     Location,
+    Client,
 ]
 tables_logged_after_every_delete = [
     UserEducation,
@@ -79,6 +84,7 @@ tables_logged_after_every_delete = [
     Skill,
     SkillCategory,
     Location,
+    Client,
 ]
 generate_id_tables = (User,)
 

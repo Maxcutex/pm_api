@@ -82,6 +82,7 @@ class BaseController:
 
         response = jsonify(data)
         response.status_code = status_code
+        response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
     def missing_required(self, params):

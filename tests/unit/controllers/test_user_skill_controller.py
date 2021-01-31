@@ -38,12 +38,11 @@ class TestUserSkillController(BaseTestCase):
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
-        self.mock_user_skill = UserSkillFactory(
-            id=1,
+        self.mock_user_skill = UserSkillFactory.create(
             skill_level="expert",
             years=4,
-            skill_id=self.skill_one.id,
-            user_id=self.user.id,
+            skill=self.skill_one,
+            user=self.user,
             is_deleted=False,
             created_at=datetime.now(),
             updated_at=datetime.now(),
@@ -82,7 +81,7 @@ class TestUserSkillController(BaseTestCase):
             user_skill_controller = UserSkillController(self.request_context)
 
             # Act
-            result = user_skill_controller.get_user_skill(1)
+            result = user_skill_controller.get_user_skill(99)
 
             # Assert
             assert result.status_code == 400

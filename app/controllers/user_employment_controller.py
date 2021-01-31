@@ -1,12 +1,16 @@
 import datetime
+from dateutil import relativedelta
+from sqlalchemy import desc
 
 from app.controllers.base_controller import BaseController
+from app.models import UserEmployment
 from app.repositories import (
     UserRepo,
     SkillRepo,
     UserEmploymentRepo,
     UserEmploymentSkillRepo,
 )
+from app.utils.date_diff_functions import date_diff_string
 
 
 class UserEmploymentController(BaseController):
@@ -23,14 +27,16 @@ class UserEmploymentController(BaseController):
             user_employment_id=employment_id
         )
         for skill in skills:
-            skill_data = self.skill_repo.find_first(id=skill)
+            skill_data = self.skill_repo.find_first(id=skill.skill_id)
             skill_dict = skill_data.serialize()
             skill_dict["name"] = skill_data.name
             skills_list.append(skill_dict)
         return skills_list
 
     def list_user_employment_history(self, user_id):
-        user_employments = self.user_employment_repo.get_unpaginated(user_id=user_id)
+        user_employments = self.user_employment_repo.get_unpaginated_desc(
+            self.user_employment_repo._model.id, user_id=user_id
+        )
 
         user_employment_list = []
         for user_employment in user_employments:
@@ -38,6 +44,22 @@ class UserEmploymentController(BaseController):
             user_employment_dict["skills"] = self._get_employment_skills(
                 user_employment.id
             )
+            user_employment_dict[
+                "start_date_formatted"
+            ] = user_employment.start_date.strftime("%b, %Y")
+            user_employment_dict[
+                "end_date_formatted"
+            ] = user_employment.end_date.strftime("%b, %Y")
+            user_employment_dict["start_date"] = user_employment.start_date.strftime(
+                "%Y-%m-%d"
+            )
+            user_employment_dict["end_date"] = user_employment.end_date.strftime(
+                "%Y-%m-%d"
+            )
+            user_employment_dict["duration"] = date_diff_string(
+                user_employment.start_date, user_employment.end_date
+            )
+
             user_employment_list.append(user_employment_dict)
         return self.handle_response(
             "OK",

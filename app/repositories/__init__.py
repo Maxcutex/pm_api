@@ -10,3 +10,4 @@ from .user_employment_repo import UserEmploymentRepo
 from .user_employment_skill_repo import UserEmploymentSkillRepo
 from .user_project_repo import UserProjectRepo
 from .user_project_skill_repo import UserProjectSkillRepo
+from .user_education_repo import UserEducationRepo
