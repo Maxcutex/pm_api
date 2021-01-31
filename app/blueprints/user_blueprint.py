@@ -105,7 +105,7 @@ def update():
     return user_controller.update()
 
 
-@user_blueprint.route("/<int:id>/", methods=["GET"])
+@user_blueprint.route("/user_profile/<int:id>", methods=["GET"])
 # @cross_origin(supports_credentials=True)
 @Auth.has_permission(["view_users", "view_users_self"])
 # @swag_from('documentation/get_user.yml')

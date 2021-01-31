@@ -493,7 +493,6 @@ class UserController(BaseController):
                         "%Y-%m-%d %H:%M:%S"
                     ),
                     "date_time_exp": time_limit.strftime("%Y-%m-%d %H:%M:%S"),
-                    "date_time_delta": datetime.timedelta(days=3),
                 },
                 "iat": datetime.datetime.utcnow(),
                 "exp": time_limit,
