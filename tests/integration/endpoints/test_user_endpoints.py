@@ -185,7 +185,7 @@ class TestUserEndpoints(BaseTestCase):
         user = UserFactory()
         user.save()
         response = self.client().get(
-            self.make_url(f"/users/{user.id}/"), headers=headers
+            self.make_url(f"/users/user_profile/{user.id}"), headers=headers
         )
 
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
