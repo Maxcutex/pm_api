@@ -3,6 +3,7 @@ import datetime
 from app.controllers.base_controller import BaseController
 from app.repositories import UserRoleRepo, RoleRepo, UserRepo, PermissionRepo
 from app.models import Role, User
+from app.services.aws_s3_service import AwsS3Service
 from app.utils.auth import Auth
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.utils.id_generator import PushID
@@ -81,6 +82,16 @@ class UserController(BaseController):
                 "meta": self.pagination_meta(user_roles),
             },
         )
+
+    def check_email(self, email):
+
+        if self.user_repo.exists(email=email) and email is not None:
+            return self.handle_response(
+                f"User with email '{email}' already exists",
+                status_code=200,
+                payload={"useable": False},
+            )
+        return self.handle_response("Email is Valid!!!", payload={"useable": True})
 
     def list_all_users(self):
 
@@ -193,6 +204,7 @@ class UserController(BaseController):
             "role_id",
             "gender",
             "date_of_birth",
+            "employment_date",
             "location_id",
             "password",
         )
@@ -204,6 +216,7 @@ class UserController(BaseController):
             role_id,
             gender,
             date_of_birth,
+            employment_date,
             location_id,
             password,
         ) = user_info
@@ -291,7 +304,39 @@ class UserController(BaseController):
         return self.handle_response("OK", payload={"user": user_data}, status_code=200)
 
     def update_profile_image(self, update_id):
-        pass
+        (image_url,) = self.request_params(
+            "image_url",
+        )
+
+        user = self.user_repo.find_first_(id=update_id)
+        if not user:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User not found"}, status_code=404
+            )
+
+        if user.is_deleted:
+            return self.handle_response(
+                msg="FAIL", payload={"user": "User already deleted"}, status_code=400
+            )
+
+        updates = {
+            "image_url": image_url,
+        }
+
+        user = self.user_repo.update(user, **updates)
+
+        user_data = user.serialize()
+        del user_data["password"]
+        user_roles = self.user_role_repo.get_unpaginated(user_id=update_id)
+        user_data["user_roles"] = [
+            user_role.role.to_dict(only=["id", "name"]) for user_role in user_roles
+        ]
+
+        return self.handle_response("OK", payload={"user": user_data}, status_code=200)
+
+    def generate_presigned_url(self, file_name, expiration):
+        aws_service = AwsS3Service()
+        return aws_service.generate_presigned_post(file_name, expiration)
 
     def self_update_account_details(self, update_id):
         (
@@ -360,7 +405,12 @@ class UserController(BaseController):
             )
 
         user_info = self.request_params_dict(
-            "first_name", "last_name", "email", "role_id"
+            "role_id",
+            "gender",
+            "date_of_birth",
+            "employment_date",
+            "first_name",
+            "last_name",
         )
 
         if user_info.get("role_id"):

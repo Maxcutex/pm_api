@@ -62,7 +62,7 @@ class TestUserSkillEndpoints(BaseTestCase):
         user = UserFactory.create()
         user.save()
         UserRoleFactory.create(user=user, role=role1)
-        UserSkillFactory.create_batch(3, user=user)
+        UserSkillFactory.create_batch(3, user=user, skill=self.skill_four)
 
         response = self.client().get(
             self.make_url(f"/user_skill/user/{user.id}"),
@@ -81,7 +81,7 @@ class TestUserSkillEndpoints(BaseTestCase):
         PermissionFactory.create(keyword="view_user_skill", role=role)
         UserRoleFactory.create(user_id=user_id, role=role)
 
-        user_skill = UserSkillFactory.create()
+        user_skill = UserSkillFactory.create(skill=self.skill_four)
         user_skill.save()
         response = self.client().get(
             self.make_url("/user_skill/user-single/{}".format(user_skill.id)),
@@ -108,7 +108,7 @@ class TestUserSkillEndpoints(BaseTestCase):
 
         PermissionFactory.create(keyword="update_user_skill", role=role1)
         UserRoleFactory.create(user_id=user_id, role=role1)
-        user_proj_data = UserSkillFactory.create()
+        user_proj_data = UserSkillFactory.create(skill=self.skill_four)
         user_proj_data.save()
         data = {
             "user_id": user_id,
@@ -135,7 +135,7 @@ class TestUserSkillEndpoints(BaseTestCase):
         PermissionFactory.create(keyword="update_user_skill", role=role1)
         UserRoleFactory.create(user_id=user_id, role=role1)
 
-        user_proj_data = UserSkillFactory.create(skill_id=self.skill_one.id)
+        user_proj_data = UserSkillFactory.create(skill=self.skill_one)
         user_proj_data.save()
 
         data = {
@@ -153,11 +153,12 @@ class TestUserSkillEndpoints(BaseTestCase):
 
     def test_delete_user_skill_endpoint_with_right_permission(self):
         role = RoleFactory.create()
-        user_id = BaseTestCase.user_id()
-
+        # user_id = BaseTestCase.user_id()
+        user = UserFactory.create()
+        user.save()
         PermissionFactory.create(keyword="delete_user_skill", role=role)
-        UserRoleFactory.create(user_id=user_id, role=role)
-        user_proj_data = UserSkillFactory.create()
+        UserRoleFactory.create(user=user, role=role)
+        user_proj_data = UserSkillFactory.create(user=user, skill=self.skill_one)
         user_proj_data.save()
 
         response = self.client().delete(
@@ -173,10 +174,13 @@ class TestUserSkillEndpoints(BaseTestCase):
 
     def test_delete_user_skill_endpoint_without_right_permission(self):
         role = RoleFactory.create()
-        user_id = BaseTestCase.user_id()
+        # user_id = BaseTestCase.user_id()
 
-        UserRoleFactory.create(user_id=user_id, role=role)
-        user_proj_data = UserSkillFactory.create()
+        user = UserFactory.create()
+        user.save()
+        PermissionFactory.create(keyword="create_user_skill", role=role)
+        UserRoleFactory.create(user=user, role=role)
+        user_proj_data = UserSkillFactory.create(user=user, skill=self.skill_four)
         user_proj_data.save()
 
         response = self.client().delete(
@@ -186,7 +190,7 @@ class TestUserSkillEndpoints(BaseTestCase):
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
 
         self.assert401(response)
-        self.assertEqual(response_json["msg"], "Access Error - No Permission Granted")
+        self.assertEqual(response_json["msg"], "Access Error - Permission Denied")
 
     def test_delete_user_skill_endpoint_with_wrong_user_skill_id(self):
         role1 = RoleFactory.create(name="admin")
@@ -199,7 +203,7 @@ class TestUserSkillEndpoints(BaseTestCase):
         )
 
         UserRoleFactory.create(user_id=user_id, role=role1)
-        user_proj_data = UserSkillFactory.create()
+        user_proj_data = UserSkillFactory.create(skill=self.skill_four)
         user_proj_data.save()
 
         response = self.client().delete(

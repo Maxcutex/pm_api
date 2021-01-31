@@ -1,4 +1,5 @@
 from .base_model import BaseModel, db
+from ..utils.enums import ClientStatus
 
 
 class Client(BaseModel):
@@ -9,5 +10,5 @@ class Client(BaseModel):
     institution_city = db.Column(db.String, nullable=False)
     institution_country = db.Column(db.String, nullable=False)
     institution_size = db.Column(db.String, nullable=True)
-    job_title_needed = db.Column(db.String, nullable=True)
-    job_description = db.Column(db.Text, nullable=True)
+    status = db.Column(db.Enum(ClientStatus), nullable=True)
+    start_date = db.Column(db.Date(), nullable=False)

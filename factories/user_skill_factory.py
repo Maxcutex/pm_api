@@ -6,7 +6,8 @@ from app.utils import db
 from faker import Faker
 from faker.providers import misc
 
-from factories import SkillFactory, UserFactory
+from factories.skill_factory import SkillFactory
+from factories.user_factory import UserFactory
 
 fake = Faker()
 fake.add_provider(misc)
@@ -17,7 +18,6 @@ class UserSkillFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = UserSkill
         sqlalchemy_session = db.session
 
-    id = factory.Sequence(lambda n: n)
     skill_level = "intermediate"  # change to a faker of random enum values
     years = 4  # Change to a random number faker
     skill = factory.SubFactory(SkillFactory)
@@ -33,7 +33,6 @@ class UserSkillFactoryFake(factory.Factory):
     class Meta:
         model = UserSkill
 
-    id = factory.Sequence(lambda n: n)
     skill_level = "intermediate"  # change to a faker of random enum values
     years = 4  # Change to a random number faker
     skill = factory.SubFactory(SkillFactory)

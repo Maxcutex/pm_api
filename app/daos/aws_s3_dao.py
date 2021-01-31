@@ -12,7 +12,9 @@ REGION = os.environ.get("AWS_REGION", None)
 
 
 class AwsS3Dao:
-    DEFAULT_BUCKET = "sarcos"
+    DEFAULT_BUCKET = os.environ.get(
+        "AWS_BUCKET", "webspoons"
+    )  # or get from environment vari
     DEFAULT_EXPIRATION = 20 * 60  # 20 minutes
     _client = boto3.client(
         "s3", config=Config(region_name=REGION, signature_version="s3v4")

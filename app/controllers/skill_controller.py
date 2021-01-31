@@ -9,7 +9,7 @@ class SkillController(BaseController):
 
     def list_skills(self):
         skills = self.skill_repo.get_unpaginated()
-        skill_list = [skill.serialize() for skill in skills.items]
+        skill_list = [skill.serialize() for skill in skills]
         return self.handle_response(
             "OK",
             payload={

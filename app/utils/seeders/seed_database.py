@@ -18,6 +18,7 @@ from app.models import (
     UserProjectSkill,
     UserProject,
     UserEducation,
+    UserSkill,
 )
 from app.utils import db
 from .seed_data import (
@@ -33,11 +34,11 @@ from .seed_data import (
     user_project_data,
     user_education_data,
     user_project_skill_data,
+    user_skill_data,
 )
 from .test_data import test_data
 
 SEED_OPTIONS = ("location", "role", "user_role", "permission", "user")
-
 model_mapper = OrderedDict(
     {
         "location": {"model": Location, "data": location_data},
@@ -48,6 +49,7 @@ model_mapper = OrderedDict(
         "skill_category": {"model": SkillCategory, "data": skill_category_data},
         "skill": {"model": Skill, "data": skill_data},
         "user_employment": {"model": UserEmployment, "data": user_employment_data},
+        "user_skill": {"model": UserSkill, "data": user_skill_data},
         "user_employment_skill": {
             "model": UserEmploymentSkill,
             "data": user_employment_skill_data,

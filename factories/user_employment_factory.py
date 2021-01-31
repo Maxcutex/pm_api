@@ -28,7 +28,7 @@ class UserEmploymentFactory(factory.alchemy.SQLAlchemyModelFactory):
     institution_url = fake.uri()
     institution_city = fake.city()
     institution_country = fake.country()
-    institution_size = "11-50 employees"
+    institution_size = "11 - 50 employees"
     work_summary = fake.paragraph(nb_sentences=5)
     accomplishments = fake.paragraph(nb_sentences=5)
     job_title = fake.job()

@@ -68,6 +68,12 @@ class EmploymentType(BaseEnum):
     contract = "contract"
 
 
+class ClientStatus(BaseEnum):
+    lead = "Lead"
+    closed = "Closed"
+    rejected = "Rejected"
+
+
 class WeekDays(BaseEnum):
     monday = "monday"
     tuesday = "tuesday"

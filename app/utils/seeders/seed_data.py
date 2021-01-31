@@ -276,6 +276,30 @@ permission_data = [
         "role_id": "1",
         "keyword": "update_user_education",
     },
+    {
+        "id": "48",
+        "name": "view_skill",
+        "role_id": "1",
+        "keyword": "view_skill",
+    },
+    {
+        "id": "49",
+        "name": "delete_skill",
+        "role_id": "1",
+        "keyword": "delete_skill",
+    },
+    {
+        "id": "50",
+        "name": "create_skill",
+        "role_id": "1",
+        "keyword": "create_skill",
+    },
+    {
+        "id": "51",
+        "name": "update_skill",
+        "role_id": "1",
+        "keyword": "update_skill",
+    },
 ]
 skill_category_data = [
     {
@@ -712,7 +736,6 @@ user_skill_data = [
         "is_deleted": False,
     },
 ]
-
 
 # user_employment_data = UserEmploymentFactoryFake.build_batch(10, user_id=1)
 # user_employment_data += UserEmploymentFactoryFake.build_batch(10, user_id=2)

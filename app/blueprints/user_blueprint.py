@@ -60,12 +60,20 @@ def create_user():
     return user_controller.create_user()
 
 
+@user_blueprint.route("/check_email_exists", methods=["GET"])
+# @swag_from('documentation/create_user.yml')
+def check_email():
+    email = request.args.get("email")
+    return user_controller.check_email(email)
+
+
 @user_blueprint.route("/register/", methods=["POST"])
 @Security.validator(
     [
         "role_id|required",
         "gender|required",
         "date_of_birth|required",
+        "employment_date|required",
         "password|required",
         "first_name|required",
         "last_name|required",
@@ -76,6 +84,25 @@ def create_user():
 # @swag_from('documentation/create_user.yml')
 def register():
     return user_controller.register()
+
+
+@user_blueprint.route("/update/<int:id>", methods=["POST"])
+@Security.validator(
+    [
+        "role_id|required",
+        "gender|required",
+        "date_of_birth|required",
+        "employment_date|required",
+        "password|optional",
+        "first_name|required",
+        "last_name|required",
+        "userId|optional",
+        "imageUrl|optional:url",
+    ]
+)
+# @swag_from('documentation/create_user.yml')
+def update():
+    return user_controller.update()
 
 
 @user_blueprint.route("/<int:id>/", methods=["GET"])
@@ -99,9 +126,13 @@ def update_user_summary(user_id):
 @Auth.has_permission(["update_user", "update_user_self"])
 @Security.validator(
     [
-        "role_id|optional",
-        "first_name|optional",
-        "last_name|optional",
+        "role_id|required",
+        "gender|required",
+        "date_of_birth|required",
+        "employment_date|required",
+        "password|optional",
+        "first_name|required",
+        "last_name|required",
         "user_id|optional",
         "imageUrl|optional:url",
     ]
@@ -124,7 +155,7 @@ def update_user(user_id):
         "user_id|required",
         "git_hub|optional",
         "linked_in|optional",
-        "personal_email|optional:url",
+        "personal_email|optional:email",
     ]
 )
 # @swag_from('documentation/update_user.yml')
@@ -135,8 +166,20 @@ def update_user_info(user_id):
 @user_blueprint.route("/<int:user_id>/image", methods=["PUT", "PATCH"])
 # @cross_origin(supports_credentials=True)
 @Auth.has_permission(["update_user", "update_user_self"])
+@Security.validator(
+    [
+        "image_url|required",
+    ]
+)
 def update_profile_image(user_id):
     return user_controller.update_profile_image(user_id)
+
+
+@user_blueprint.route("/generate_presigned_url", methods=["GET"])
+# @cross_origin(supports_credentials=True)
+@Auth.has_permission(["update_user", "update_user_self"])
+def generate_presigned_url(file_name, expiration):
+    return user_controller.generate_presigned_url(file_name, expiration)
 
 
 @user_blueprint.route("/login", methods=["POST"])
