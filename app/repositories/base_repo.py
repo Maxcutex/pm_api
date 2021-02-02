@@ -75,7 +75,8 @@ class BaseRepo:
             )
         except ValueError as err:
             raise BaseModelValidationError(str(err))
-
+        print("page =>", page)
+        print("per page =>", per_page)
         offset = (page - 1) * per_page
 
         all_items = self._model.query.filter_by(is_deleted=False)

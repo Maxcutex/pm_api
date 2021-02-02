@@ -1,7 +1,9 @@
 import datetime
 
+from sqlalchemy import or_
 from werkzeug.security import generate_password_hash
 
+from app.models import Skill, UserSkill
 from app.repositories.base_repo import BaseRepo
 from app.models.user import User
 
@@ -42,3 +44,30 @@ class UserRepo(BaseRepo):
         )
         user.save()
         return user
+
+    def get_simple_search_paginated_options(self, search, page, per_page):
+        return (
+            User.query.filter(
+                or_(
+                    User.first_name.like(f"%{search}%"),
+                    User.last_name.like(f"%{search}%"),
+                    User.email.like(f"%{search}%"),
+                )
+            )
+            .order_by(User.first_name.desc())
+            .paginate(page=page, per_page=per_page, error_out=False)
+        )
+
+    def get_advanced_search_paginated_options(
+        self, experience, skills_list, location_id, page, per_page
+    ):
+        return (
+            User.query.join(UserSkill, User.id == UserSkill.user_id)
+            .filter(
+                UserSkill.skill_id.in_(skills_list),
+                location_id=location_id,
+                experience_years=experience,
+            )
+            .order_by(User.first_name.desc())
+            .paginate(page=page, per_page=per_page, error_out=False)
+        )

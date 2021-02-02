@@ -3,6 +3,7 @@ import datetime
 from app.controllers.base_controller import BaseController
 from app.repositories import UserRoleRepo, RoleRepo, UserRepo, PermissionRepo
 from app.models import Role, User
+from app.repositories.location_repo import LocationRepo
 from app.services.aws_s3_service import AwsS3Service
 from app.utils.auth import Auth
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -29,6 +30,7 @@ class UserController(BaseController):
         self.user_role_repo = UserRoleRepo()
         self.role_repo = RoleRepo()
         self.user_repo = UserRepo()
+        self.location_repo = LocationRepo()
         self.perm_repo = PermissionRepo()
 
     def list_admin_users(self, admin_role_id: int = 1) -> list:
@@ -96,14 +98,38 @@ class UserController(BaseController):
     def list_all_users(self):
 
         params = self.get_params_dict()
+        print(params)
         page = params.get("page")
         per_page = params.get("per_page")
+        search_type = params.get("search_type")
+        search_value = params.get("search_value")
 
-        users = self.user_repo.paginate(error_out=False, page=page, per_page=per_page)
         user_list = []
+        if search_type is None:
+            users = self.user_repo.paginate(
+                error_out=False, page=page, per_page=per_page
+            )
+        elif search_type == "Simple":
+            users = self.user_repo.get_simple_search_paginated_options(
+                search=search_value, page=page, per_page=per_page
+            )
+            print("users are ", users)
+        elif search_type == "Advanced":
+            experience = params.get("experience")
+            skills_list = params.get("skills_list")
+            location_id = params.get("location_id")
+            users = self.user_repo.get_advanced_search_paginated_options(
+                experience=experience,
+                skills_list=skills_list,
+                location_id=location_id,
+                page=page,
+                per_page=per_page,
+            )
+
         if users.items:
             for user in users.items:
                 user_item = user.serialize()
+                user_item["location"] = user.location.serialize()
                 if user.employment_date is not None:
                     user_item["employment_date"] = user.employment_date.strftime(
                         "%b %d, %Y"
@@ -119,11 +145,14 @@ class UserController(BaseController):
                 role_objects = Role.query.filter(Role.id.in_(associated_roles)).all()
                 roles = [{"id": role.id, "name": role.name} for role in role_objects]
                 user["user_roles"] = roles
+
                 del user["password"]
             return self.handle_response(
                 "OK", payload={"users": user_list, "meta": self.pagination_meta(users)}
             )
-        return self.handle_response("No users found", status_code=404)
+        return self.handle_response(
+            "No users found", payload={"users": user_list}, status_code=200
+        )
 
     def delete_user(self, id):
         user = self.user_repo.get(id)

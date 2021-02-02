@@ -56,11 +56,15 @@ class UserSkillController(BaseController):
             )
             # import pdb
             # pdb.set_trace()
-            return self.handle_response(
-                "OK",
-                payload={"user_skill": user_skill.serialize()},
-                status_code=201,
-            )
+            if user_skill.id is not None:
+
+                return self.handle_response(
+                    "OK",
+                    payload={"user_skill": user_skill.serialize()},
+                    status_code=201,
+                )
+            else:
+                return self.handle_response("Error - User Not Added ", status_code=400)
         except Exception as e:
             return self.handle_response("Error processing: " + str(e), status_code=400)
 
