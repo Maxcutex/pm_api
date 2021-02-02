@@ -129,9 +129,9 @@ class Auth:
             decoded = jwt.decode(
                 token,
                 public_key,
-                # audience="webspoons.com",
-                # issuer="accounts.webspoons.com",
-                # options={"verify_exp": True},
+                audience="webspoons.com",
+                issuer="accounts.webspoons.com",
+                options={"verify_exp": True},
             )
             return decoded
         except jwt.ExpiredSignature:
