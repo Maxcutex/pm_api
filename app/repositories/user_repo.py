@@ -21,7 +21,7 @@ class UserRepo(BaseRepo):
         date_of_birth,
         location_id,
         password,
-        employment_date,
+        employment_date=datetime.datetime.now().strftime("%Y-%m-%d"),
     ):
         """
         function for creating a new user

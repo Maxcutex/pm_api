@@ -213,7 +213,15 @@ class UserController(BaseController):
                 f"User with email '{email}' already exists", status_code=400
             )
         try:
-            user = self.user_repo.new_user(*user_info).serialize()
+            user = self.user_repo.new_user(
+                first_name,
+                last_name,
+                email,
+                gender,
+                date_of_birth,
+                location_id,
+                password,
+            ).serialize()
             del user["password"]
             user_role = self.user_role_repo.new_user_role(
                 role_id=role_id, user_id=user["id"]

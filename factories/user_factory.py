@@ -24,6 +24,7 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     image_url = factory.Faker("url")
     gender = "male"
     date_of_birth = fake.date_between()
+    employment_date = fake.date_between()
     is_active = True
     is_deleted = False
 
@@ -42,5 +43,6 @@ class UserFactoryFake(factory.Factory):
     image_url = factory.Faker("url")
     gender = "male"
     date_of_birth = fake.date_between()
+    employment_date = fake.date_between()
     is_active = True
     is_deleted = False

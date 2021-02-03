@@ -26,7 +26,6 @@ class TestUserRoleRepo(BaseTestCase):
             user.first_name,
             user.last_name,
             user.email,
-            role.id,
             "male",
             datetime.datetime.now().strftime("%Y-%m-%d"),
             1,

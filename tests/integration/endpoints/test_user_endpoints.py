@@ -320,8 +320,10 @@ class TestUserEndpoints(BaseTestCase):
             role_id=role.id,
             gender=user.gender,
             date_of_birth=str(user.date_of_birth),
+            employment_date=str(user.employment_date),
             password=user.password,
             email=user.email,
+            location_id=user.location_id,
         )
 
         response = self.client().post(
@@ -331,6 +333,7 @@ class TestUserEndpoints(BaseTestCase):
         )
 
         response_json = self.decode_from_json_string(response.data.decode("utf-8"))
+        print(response_json)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response_json["msg"], "OK")
         self.assertEqual(
