@@ -93,6 +93,9 @@ def truncate_db():
 def bulk_insert(model, data):
     try:
         db.session.bulk_insert_mappings(model, data)
+        # for each_data in data:
+        #     user = User(first_name=each_data.first_name)
+        #     db.session.add(user)
         db.session.commit()
     except SQLAlchemyError as error:
         db.session.rollback()

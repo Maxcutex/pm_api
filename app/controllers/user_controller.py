@@ -87,6 +87,13 @@ class UserController(BaseController):
 
     def check_email(self, email):
 
+        domain = email.split("@")[1]
+        if domain != "webspoons.com":
+            return self.handle_response(
+                "Only webspoons email can be registered",
+                status_code=200,
+                payload={"useable": False},
+            )
         if self.user_repo.exists(email=email) and email is not None:
             return self.handle_response(
                 f"User with email '{email}' already exists",
@@ -261,8 +268,21 @@ class UserController(BaseController):
                 f"User with email '{email}' already exists", status_code=400
             )
         try:
-            user = self.user_repo.new_user(*user_info).serialize()
+
+            user_post = self.user_repo.new_user(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                gender=gender,
+                date_of_birth=date_of_birth,
+                location_id=location_id,
+                password=password,
+                employment_date=employment_date,
+            )
+
+            user = user_post.serialize()
             del user["password"]
+
             user_role = self.user_role_repo.new_user_role(
                 role_id=role_id, user_id=user["id"]
             )

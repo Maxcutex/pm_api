@@ -12,26 +12,24 @@ class UserRepo(BaseRepo):
     def __init__(self):
         BaseRepo.__init__(self, User)
 
-    def new_user(self, *args, **kwargs):
+    def new_user(
+        self,
+        first_name,
+        last_name,
+        email,
+        gender,
+        date_of_birth,
+        location_id,
+        password,
+        employment_date,
+    ):
         """
         function for creating a new user
 
-        :parameter
-            args: a list containing the following positional values
-                  [first_name, last_name, email, user_id, photo]
+
 
         """
-        (
-            first_name,
-            last_name,
-            email,
-            role_id,
-            gender,
-            date_of_birth,
-            location_id,
-            password,
-            *extras,
-        ) = args
+
         phash = generate_password_hash(password)
         user = User(
             first_name=first_name,
@@ -41,6 +39,7 @@ class UserRepo(BaseRepo):
             date_of_birth=datetime.datetime.strptime(date_of_birth, "%Y-%m-%d"),
             location_id=location_id,
             password=phash,
+            employment_date=datetime.datetime.strptime(employment_date, "%Y-%m-%d"),
         )
         user.save()
         return user

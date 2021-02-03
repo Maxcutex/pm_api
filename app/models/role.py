@@ -9,4 +9,5 @@ class Role(BaseModel):
     help = db.Column(db.Text(), nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=True)
     is_deleted = db.Column(db.Boolean, default=False, nullable=True)
+    user_roles = db.relationship("UserRole", backref="roles", lazy=True)
     # permissions = db.relationship("Permission", lazy=False)
