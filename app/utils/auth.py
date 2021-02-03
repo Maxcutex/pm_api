@@ -125,13 +125,16 @@ class Auth:
 
         # public_key = Auth._get_jwt_public_key()
         public_key = str(getenv("JWT_SECRET_KEY"))
+        audience = str(getenv("AUDIENCE", "webspoons.com"))
+        issuer = str(getenv("ISSUER", "accounts.webspoons.com"))
+        options = {"verify_exp": bool(getenv("VERIFY_EXP", True))}
         try:
             decoded = jwt.decode(
                 token,
                 public_key,
-                audience="webspoons.com",
-                issuer="accounts.webspoons.com",
-                options={"verify_exp": True},
+                audience=audience,
+                issuer=issuer,
+                options=options,
             )
             return decoded
         except jwt.ExpiredSignature:
